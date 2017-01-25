@@ -1,0 +1,44 @@
+<!POSTDOC>
+<html>
+<head>	
+	<meta content="text/html;charset=utf-8"  http-equiv="Content-Type">
+	<meta content="utf-8" http-equiv="encoding">
+</head>
+<script type="text/javascript" src="dat.gui.js"></script>
+<script type="text/javascript">
+
+
+
+	var modText =function()
+	{
+		this.message = 'dat.gui' ;
+		this.speed = 0.8
+		this.displayOutline = false ;
+		
+	} 
+
+	test1 = function() {
+		var text = new modText() ;
+		var gui = new dat.GUI() ;
+		
+
+		gui.add(text, 'message') ;
+		gui.add(text, 'speed',-5,5) ;
+		gui.add(text,'displayOutline') ;
+
+		var parent = document.getElementById("test") ;
+		parent.appendChild(gui.domElement) ;
+
+	} ;
+	
+</script>
+
+
+    
+
+<body onload = "test1()" >
+	<div id = "test" width = "150" height = "150">
+	
+	</div>
+</body>
+</html>

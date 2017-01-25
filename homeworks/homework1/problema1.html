@@ -1,0 +1,41 @@
+<!POSTDOC>
+<html>
+<head>	
+	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+	<meta content="utf-8" http-equiv="encoding">
+</head>
+<script type="text/javascript">
+
+	makeTextBold = function() 
+	{
+		doc = document ;
+		var message = doc.getElementById("message").value ;
+		var pVariable = doc.getElementById("BoldMsg") ;
+		pVariable.innerHTML = "hello " + message ;
+		pVariable.style.fontWeight = "bold"  ;
+	}
+
+	enterKeyOnText = function(event)
+	{
+		doc = document ;
+		var pVariable = doc.getElementById("message") ;
+		var pVariableStr = pVariable.value ;
+
+		if(window.event == 13)
+			makeTextBold() ;
+		else if(event.which == 13)
+			makeTextBold() ;
+	}
+	
+</script>
+
+<body>
+	<div>
+		<input type = "textbox" placeholder = "Enter your name here" id = "message" onkeypress="enterKeyOnText(event)"></textarea>
+		<input type = "button" value = "Send" onclick="makeTextBold()">
+	</div>
+	<div> 
+		<p id = "BoldMsg" ></p>
+	</div>
+</body>
+</html>
