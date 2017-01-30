@@ -1,0 +1,60 @@
+<html>
+
+<head>
+<title>HTML5 Canvas &mdash; Demo simple graphics</title>
+<meta http-equiv="content-type" content="text/html; charset=UTF8">
+
+<style>
+    canvas {border: solid 1px black}
+    svg {border: solid 1px black}
+    td {vertical-align: top;}
+    #msgBox {color:gray;}
+    h1, h2, h3, h4 {margin-top: 5px; margin-bottom: 5px;}
+</style>
+</head>
+
+<script src = "display.js">
+</script>
+
+<body onload="onLoad();">
+    <h2>Graphics demo - <i>Omar Cruz Pantoja</i></h2>
+
+    <h4>Graphics</h4>
+    <table><tbody>
+    <tr>
+        <td>SVG</td>
+        <td>Canvas</td>
+    </tr>
+    <tr>
+      <td>
+         <svg id='mySVG' width="200" height="200" fill="orange" 	
+              xmlns="http://www.w3.org/2000/svg">
+            <path d= "M0 0 L0 200 L200 200 L200 0" fill = "black"/>
+            <polygon points = "40,80 40,160 60,140 80,160 100,140 120,160 140,140 160,160 160,80"/>
+          	<circle cx = "100" cy="80" r= "60"/>
+          	<ellipse cx = "78" cy = "80" rx= "17" ry = "20" style = "fill:white"/>
+          	<ellipse cx = "122"  cy = "80" rx = "17" ry = "20" style = "fill:white"/>
+          	<ellipse id = "leftSVGEye" cx = "85" cy = "82" rx = "7" ry = "9" style = "fill:#406AA6"/>
+			<ellipse id = "rightSVGEye" cx = "129" cy = "83" rx = "7" ry = "9" style = "fill:#406AA6"/>
+
+			<text id = "SvgText" text-anchor = "middle" font-weight = "bold" font-family = "Calibri" font-size = "20pt" x = "100" y = "185" fill= "white">CLYDE</text>
+         </svg >
+      </td>
+      <td>
+         <canvas id="myCanvas" width="200" height="200"></canvas>
+      </td>
+    </tbody><table>
+    <p><small>Message: Click inside any of the boxes<span id="msgBox"></span></small></p>
+
+    <h4>Description</h4>
+    User functionalities:
+
+    Click on any area of the SVG/Canvas box and it will automatically change the ghost. The user will be able to cycle through all four ghost by clicking at least 4 times any each of the boxes. The eyes of the ghost in the canvas will be randomly pointing either left or right direction, after the user clicks the box.
+    <br><br>
+    The message below the SVG and Canvas boxes will be displaying the current event that happened if the user tries to have an interaction with the boxes. 
+
+    <br><br>
+    Mouse click: Prints a message in message box.
+    
+</body>
+</html>   
