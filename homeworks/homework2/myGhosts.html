@@ -32,10 +32,10 @@
             <path d= "M0 0 L0 200 L200 200 L200 0" fill = "black"/>
             <polygon points = "40,80 40,160 60,140 80,160 100,140 120,160 140,140 160,160 160,80"/>
           	<circle cx = "100" cy="80" r= "60"/>
-          	<ellipse cx = "78" cy = "80" rx= "17" ry = "20" style = "fill:white"/>
-          	<ellipse cx = "122"  cy = "80" rx = "17" ry = "20" style = "fill:white"/>
+          	<circle cx = "78" cy = "80" r= "18"  style = "fill:white"/>
+          	<circle cx = "122"  cy = "80" r = "18" style = "fill:white"/>
           	<ellipse id = "leftSVGEye" cx = "85" cy = "82" rx = "7" ry = "9" style = "fill:#406AA6"/>
-			<ellipse id = "rightSVGEye" cx = "129" cy = "83" rx = "7" ry = "9" style = "fill:#406AA6"/>
+            <ellipse id = "rightSVGEye" cx = "129" cy = "83" rx = "7" ry = "9" style = "fill:#406AA6"/>
 
 			<text id = "SvgText" text-anchor = "middle" font-weight = "bold" font-family = "Calibri" font-size = "20pt" x = "100" y = "185" fill= "white">CLYDE</text>
          </svg >
@@ -44,17 +44,18 @@
          <canvas id="myCanvas" width="200" height="200"></canvas>
       </td>
     </tbody><table>
-    <p><small>Message: Click inside any of the boxes<span id="msgBox"></span></small></p>
+    <p><small>Message:<span id="msgBox"></span></small></p>
 
     <h4>Description</h4>
     User functionalities:
 
-    Click on any area of the SVG/Canvas box and it will automatically change the ghost. The user will be able to cycle through all four ghost by clicking at least 4 times any each of the boxes. The eyes of the ghost in the canvas will be randomly pointing either left or right direction, after the user clicks the box.
+    Click on any area of the SVG/Canvas box and it will automatically change the ghost. The user will be able to cycle through all four ghost by clicking at least 4 times any each of the boxes. The eyes of the ghost in the canvas will be randomly pointing either left or right direction, after the user clicks the box. If the user moves the pointer around the respecting boxes, the ghost's eyes will follow it. 
     <br><br>
-    The message below the SVG and Canvas boxes will be displaying the current event that happened if the user tries to have an interaction with the boxes. 
+    The message below the SVG and Canvas boxes will be displaying the current event that happened if the user tries to have an interaction with the boxes. (EXCLUDING FOLLOWING MOUSE POINTER)
 
     <br><br>
     Mouse click: Prints a message in message box.
+    <svg/>
     
 </body>
 </html>   
