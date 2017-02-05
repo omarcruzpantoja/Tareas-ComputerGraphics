@@ -201,18 +201,13 @@
             drawEyes(122,80, eyePosition,myEvent, eventX, eventY) ;
         }
        
-        //Add gghost name text
+        //Add ghost name text
         ctx.font = "bold 20pt Calibri" ;
        	ctx.textAlign="center"; 
         ctx.fillStyle = "white" ;
         ctx.fillText(model.names[model.current], midPointx, 185 ) ;
 		ctx.closePath() ;
 
-        //Hacer el ojo izquierdo
-
-       // ctx.strokeStyle = 'blue';
-       // ctx.lineWidth = 2;
-       // ctx.stroke();
     }
 
     function drawEyes(x,y, eye, myEvent, moveX, moveY)
@@ -267,7 +262,7 @@
       
         }
 
-        //Draw eyes on thee new position
+        //Draw eyes on the new position
     	ctx.beginPath()
     	ctx.ellipse(x+eyeX, y+eyeY, 7,9, 0, startAngle, endAngle) ;
     	ctx.closePath() ;
