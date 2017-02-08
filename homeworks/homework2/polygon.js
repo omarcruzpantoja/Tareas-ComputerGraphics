@@ -1,5 +1,12 @@
-var canvas;
+// Omar Cruz Pantoja
+// 801-14-1672
+// Prof. Remi Megret
+// CCOM-4995- Computer graphics
+// 9/feb/2017
+// polygon.js
 
+var canvas;
+var boundingBox ;
 
 var model ;
 
@@ -20,6 +27,8 @@ function initModel() {
     	selectedVertex : -1 } ;
     	//Variable to let know mousemove if the dragging will be happening
    		model.isDragging = false ;
+
+   	boundingBox = [] ;
 
 } ;
 
@@ -124,7 +133,7 @@ function modOnKeyDown(event, ctx) {
 			midPointX = (x1 + x2 )/2 ;
 			midPointY = (y1 + y2 )/2 ; 
 			//Add the new vertex to the list
-			model.pts.push([midPointX,midPointY]) ;
+			model.pts.splice(model.selectedVertex+1, 0, [midPointX,midPointY]) ;
 			//Actually draw the new vertex
 			drawPolygon(ctx) ;
 			document.getElementById("msgBox").innerHTML = "New vertex " + (model.pts.length - 1) ;
@@ -143,40 +152,75 @@ function getVertex(event, ctx) {
 	y = event.clientY - canvasPosition.top ;
 	
 	inside = false ;
-		for(i = 0 ; i < model.pts.length ;i++) {
-			deltaX = x - model.pts[i][0] ;
-			deltaY = y - model.pts[i][1] ;
-			distance = Math.sqrt( deltaX*deltaX + deltaY*deltaY ) ;
-			
-			//Check if the mouse click is inside the circle's radius
-			if(distance <= 5 )
-			{
-				model.selectedVertex = i ;
-				inside = true ;
-				document.getElementById("msgBox").innerHTML = "Selected vertex " + model.selectedVertex ;
-				//If the user drags the vertex, it will change the position
-				model.isDragging = true ;
-				//Stop looping since we found a vertex inside the radius
-				break ;
-			}
 
+	//Get information of the closest point to the mouse coords ( take first to then update info by comparing, to take the smallest distance)
+	var closest, scndClosest, closeDistance ;
+	deltaX = x - model.pts[0][0] ;
+	deltaY = y - model.pts[0][1] ;
+	closest = 0 ;
+	closeDistance = Math.sqrt(deltaX*deltaX + deltaY*deltaY) ;
+
+	for(i = 0 ; i < model.pts.length ;i++) {
+		deltaX = x - model.pts[i][0] ;
+		deltaY = y - model.pts[i][1] ;
+		distance = Math.sqrt( deltaX*deltaX + deltaY*deltaY ) ;
+		if(distance < closeDistance)
+		{
+			closest = i ;
+			closeDistance = distance ;
 		}
+		//Check if the mouse click is inside the circle's radius
+		if(distance <= 6 )
+		{
+			model.selectedVertex = i ;
+			inside = true ;
+			document.getElementById("msgBox").innerHTML = "Selected vertex " + model.selectedVertex ;
+			//If the user drags the vertex, it will change the position
+			model.isDragging = true ;
+			//Stop looping since we found a vertex inside the radius
+			break ;
+		}
+
+	}
 	
 	//Check if a vertex is selected	
-	if(model.isDragging )
+	if(model.isDragging && !inside)
 	{
 		//If the is true, reposition the vertex based on the cursor coords
 		i = model.selectedVertex ;
 		model.pts[i][0] = x;
 		model.pts[i][1] = y;
 	}
+	
+	//Add new vertex if click inside the bounding box and no vertex is selected
+	else if(isInsideBoundingBox(x,y) && !inside )
+	{
+		//Check if eihter the previous or next point is closest to the closest point to the mouse coords
+		secondPnt = (closest+ model.pts.length -1)% model.pts.length;
+		deltaX = x - model.pts[(closest+1)%model.pts.length][0] ;
+		deltaY = y - model.pts[(closest+1)%model.pts.length][1] ;
+		distance1 = Math.sqrt( deltaX*deltaX + deltaY*deltaY ) ;
 
-	//If outside the range of any vertex, don't selected them.
-	if(!inside && !model.isDragging)
+		deltaX = x - model.pts[(closest+model.pts.length-1)%model.pts.length][0] ;
+		deltaY = y - model.pts[(closest+model.pts.length-1)%model.pts.length][1] ;
+		distance2 = Math.sqrt( deltaX*deltaX + deltaY*deltaY ) ;
+
+		//If the next point is closer than previous, update
+		if(distance1 < distance2)
+			secondPnt = closest ;
+
+		//Add new point to the list of points
+		model.pts.splice(secondPnt+1, 0, [x,y]) ;
+	}
+
+	//If outside the range of bounding box, don't selected vertex.
+	
+	else if(!inside && !model.isDragging)
 	{
 		model.selectedVertex = -1 ;
 		document.getElementById("msgBox").innerHTML = "" ;
 	}
+
 
 	//Update polygon
 	drawPolygon(ctx) ;
@@ -235,20 +279,31 @@ function drawPolygon(ctx) {
 	drawBoundingBox(ctx) ;
 }
 
+function isInsideBoundingBox(x,y) {
+	if(x >= boundingBox[0] && x <= boundingBox[2])
+	{
+		if(y>=boundingBox[1] && y <= boundingBox[3])
+			//console.log("helo") 
+			return true	;
+	}
+
+	return false ;
+
+}
 function drawBoundingBox(ctx){
 	
 	//Buffer containing limiting points
-	var getValues = [] ;
+	//var boundingBox = [] ;
 
 	for(i =0 ; i < 4 ; i++)
 	{
 		//Get first value to compare with rest of polygon's vertices
 		//0 and 2 will contain X limiting values
 		if(i%2==0)
-			getValues[i] = model.pts[0][0] ;
+			boundingBox[i] = model.pts[0][0] ;
 		//1 and 3 will contain limiting Y values
 		else
-			getValues[i] = model.pts[0][1] ;
+			boundingBox[i] = model.pts[0][1] ;
 		
 		//Go through all the vertices 
 		for(j = 1 ; j < model.pts.length ; j++)
@@ -256,16 +311,15 @@ function drawBoundingBox(ctx){
 			//Find the smallest limiting X Y values
 			if(i < 2)
 			{
-
-				if(getValues[i] > model.pts[j][i])
-					getValues[i] = model.pts[j][i] ;
+				if(boundingBox[i] > model.pts[j][i])
+					boundingBox[i] = model.pts[j][i] ;
 			}
 			//Find the biggest limiting X Y values
 			else 
 			{
-				if(getValues[i] < model.pts[j][i%2])
+				if(boundingBox[i] < model.pts[j][i%2])
 				{
-					getValues[i] = model.pts[j][i%2] ;
+					boundingBox[i] = model.pts[j][i%2] ;
 				}
 			}
 
@@ -278,10 +332,10 @@ function drawBoundingBox(ctx){
 
 	//Start box
 	ctx.beginPath() ;
-	ctx.moveTo(getValues[0], getValues[1]) ;
-	ctx.lineTo(getValues[2], getValues[1]) ;
-	ctx.lineTo(getValues[2],getValues[3]) ;
-	ctx.lineTo(getValues[0], getValues[3]) ;
+	ctx.moveTo(boundingBox[0], boundingBox[1]) ;
+	ctx.lineTo(boundingBox[2], boundingBox[1]) ;
+	ctx.lineTo(boundingBox[2],boundingBox[3]) ;
+	ctx.lineTo(boundingBox[0], boundingBox[3]) ;
 	ctx.closePath() ;
 	//Close Box
 	//Set dash line color

@@ -1,3 +1,10 @@
+// Omar Cruz Pantoja
+// 801-14-1672
+// Prof. Remi Megret
+// CCOM-4995- Computer graphics
+// 9/feb/2017
+// display.js
+
     // Keep canvas, ctx, svg and model as global variables
     // Dirty, but practical for this small scale demo
     // A real production system would need to define a scope to protect them

@@ -1,3 +1,11 @@
+<!--Omar Cruz Pantoja
+801-14-1672
+Prof. Remi Megret
+CCOM-4995- Computer graphics
+9/feb/2017
+myPolygon.html
+-->
+
 <html>
 
 <head>
@@ -26,16 +34,20 @@
     <i>Functions of the demo</i><br>
     At loading a triangle will be drawn at the center of the canvas.<br><br>
 
-    Click inside the circle of any vertex and it will be selected(when selected it will be highlighted in color yellow.<br><br>
+    Mouse Click: If the user clicks inside the bounding box a new vertex will be created connected to the 2 closest points to the cursor pointer.
+    <br>If the user clicks inside the circle of any vertex, it will be selected(highlitted with color yellow).
+    <br>If the user clicks outside the bounding box, any selected vertex will be unselected. 
+    <br><br>
+    Move mouse with click (Drag): If the user selects a vertex, the user might drag around the vertex(when the mouse is up, the vertex will stay in the last position).
+    <br><br>
+    Press Key arrows with vertex selected: If the user selects a vertex, he may press any key arrow to move the vertex + or - the pixels depending on the arrow pressed.
+    <br><br>
+    Press + with vertex selected: If a vertex is selected and + is pressed, a new vertex will be drawn in the mid point of the selected point and the next one.
+    <br><br>
+    Press - with vertex selected: The vertex will be deleted. A minimum of 3 vertices are required. 
 
-    Once a vertex is selected if '-' is pressed, it will delete the selected vertex, if '+' is pressed, a new vertex<br> will be added in between the selected vertex and the next one in list.<br><br>
 
-    A vertex might be dragged around if selected and dragged.<br><br>
-
-    If a vertex is selected and any arrow key is pressed, it will reposition the selected vertex
-    10 pixels in to the position selected<br><br>
-
-    To unselect a vertex, click anywhere inside the canvas(outside the range/radius of each vertex)<br>
+    
 
     
 </body>

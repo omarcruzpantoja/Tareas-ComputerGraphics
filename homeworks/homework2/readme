@@ -1,0 +1,21 @@
+Omar Cruz Pantoja
+801-14-1672
+Prof. Remi Megret
+CCOM-4995- Computer graphics
+9/feb/2017
+
+Two simple html pages with Javascript interacions:
+
+1. myGhosts.html
+This page will contain the drawing of pacman's ghost in SVG and with canvas. 
+Interactions within the page are in the description of the html(They are provided when html is openned).
+
+2. myPolygon.html
+This page will contain the drawing of a polygon in canvas. 
+Interactions with the polygon are in the descrpition of the html also.
+
+3. display.js
+Javascript to create canvas drawing and update the interface based on the interactions made by the user for both SVG and canvas.
+
+4. polygon.js
+Javascript to create canvas and update the interdace based on the interactions made by the user. 
