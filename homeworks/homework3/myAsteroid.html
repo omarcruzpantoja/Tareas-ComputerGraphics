@@ -1,7 +1,7 @@
 <html>
 
 <head>
-<title>HTML5 Canvas &mdash; Demo asteroid</title>
+<title>Demo asteroid</title>
 <meta http-equiv="content-type" content="text/html; charset=UTF8">
 <script type="text/javascript" src="dat.gui.js"></script>
 <script type="text/javascript" src="gl-matrix.js"></script>
@@ -22,10 +22,15 @@
     <td>
     <table><tbody>
     <tr>
-    <td><canvas id="canvas" width="300" height="300"></canvas></td>
+    <td><canvas id="canvas" width="500" height="400"></canvas></td>
+    </tr>
+    <tr>
+    <td><p>Turbo time: <progress id = "turbo" value ="0" max ="3"> </progress></p>
+        <p>Power:<span id= "power"> Off</span></p>
     </tr>
     <tr>
     <td>Canvas</td>
+
     </tr>
     <tr>
     <td><small><span id="text"></span></small></td>
