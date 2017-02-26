@@ -132,18 +132,21 @@
     function drawLowerLeg(ctx) {
         // TODO
         radius = 13;
+
+        //Draw circle (joint) 
         ctx.strokeStyle = "blue"
         ctx.beginPath() ;
         ctx.arc(0, 0, radius ,0,Math.PI*2,false) ;
         ctx.closePath();
         
-
+        //Draw leg extension
         ctx.moveTo(-1*(radius + 9), -1*(radius*2 -2)) ;
         ctx.lineTo(radius + 9, -1*(radius*2-2)) ;
         ctx.lineTo(radius + 9, (radius*2+50)) ;
         ctx.lineTo(-1*(radius + 9), radius*2+50) ;
         ctx.closePath() 
 
+        //Draw feet
         ctx.moveTo(radius + 9, (radius*2+50)) ;
         ctx.lineTo(radius + 40,(radius*2+50)) ;
         ctx.lineTo(radius + 40,(radius*2+30)) ;

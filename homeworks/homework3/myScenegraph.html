@@ -1,7 +1,12 @@
+<!-- Omar Cruz Pantoja
+801-14-1672
+CCOM 4995- COMPUTER GRAPHICS 
+Prof. Remi Megret
+ -->
 <html>
 
 <head>
-<title>HTML5 Canvas &mdash; Demo scenegraph</title>
+<title>Demo scenegraph</title>
 <meta http-equiv="content-type" content="text/html; charset=UTF8">
 <script type="text/javascript" src="dat.gui.js"></script>
 
@@ -11,7 +16,7 @@
 </style>
 </head>
 
-<script type="text/javascript" src = "simplescenegraph.js"></script>
+<script type="text/javascript" src = "scenegraph2.js"></script>
 
 <body onload="start();">
     <h2>Scenegraph</h2>
@@ -19,15 +24,35 @@
     
     <td>
     <table><tbody>
-    <tr>
-    <td><canvas id="canvas" width="400" height="400"></canvas></td>
-    </tr>
-    <tr>
-    <td>Canvas</td>
-    </tr>
-    <tr>
-    <td><small><span id="text"></span></small></td>
-    </tr>
+        <tr>
+            <td><canvas id="canvas" width="400" height="400"></canvas></td>
+        </tr>
+
+        <tr>
+            <td>Description:</td>
+        </tr>
+        <tr>
+            <td><small><span id="text"></span>This is s simple robot scenegraph created using canvas.</small></td>
+        </tr>
+
+        <tr>
+            <td><br>Functionalities:</td>
+        </tr>
+        <tr>
+            <td><small><span id="text">
+                Press H to open/close Controls
+                <br>
+                Change control value x0 to change the X position of the robot. 
+                <br>
+                Change control value y0 to change the Y position of the robot.
+                <br>
+                Change control value a1 to change the rotation angle of the arm (color red)
+                <br>
+                Change control value a2 to change the rotation angle of the upper leg(color green)
+                <br>
+                Change control value a3 to change the rotation angle of the lower leg (color blue) 
+            </span></small></td>
+        </tr>
     </tbody></table>
     </td>
     

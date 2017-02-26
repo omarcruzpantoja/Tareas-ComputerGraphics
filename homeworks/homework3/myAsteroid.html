@@ -1,3 +1,8 @@
+<!-- Omar Cruz Pantoja
+801-14-1672
+CCOM 4995- COMPUTER GRAPHICS 
+Prof. Remi Megret
+ -->
 <html>
 
 <head>
@@ -24,17 +29,64 @@
     <tr>
     <td><canvas id="canvas" width="500" height="400"></canvas></td>
     </tr>
-    <tr>
-    <td><p>Turbo time: <progress id = "turbo" value ="0" max ="3"> </progress></p>
-        <p>Power:<span id= "power"> Off</span></p>
-    </tr>
-    <tr>
-    <td>Canvas</td>
 
-    </tr>
     <tr>
-    <td><small><span id="text"></span></small></td>
+        <td>
+            <p>Turbo time: <progress id = "turbo" value ="0" max ="3"> </progress></p>
+            <p>Power:<span id= "power"> INFINITE TURBO ON [OFF]</span></p>
+        </td>
     </tr>
+    
+    <tr>
+        <td><br>Description: </td>
+    </tr>
+
+    <tr>
+        <td><small><span id="text">
+            Simulation of asteroid game using canvas.<br>
+            Includes 3 modes and its parameters can be change in the controls section<br>
+            ***Game not completed*** 
+        </span></small></td>
+    </tr>
+
+    <tr>
+        <td><br>Functionalities:</td>
+    </tr>
+
+    <tr>
+        <td><small><span id="text">
+            Press letter H to open/close control setup
+            <br>Change x0 and y0 parameters to instantly relocate ship into the exact coords given respectively
+            <strong><br><br>Mode 0 - In this mode we have an event based movement</strong>
+                <br>Arrow key up: Move forward [Fixed displacement parameter] pixels
+                <br>Arrow Key down: Move backwards [fixed displacement parameter] pixels
+                <br>Arrow Key : Rotate ship clockwise [Angle step] degrees
+                <br>Arrow Key : Rotate ship counter-clockwise [Angle step] degrees
+                <br>Spacebar: Shoot laser
+            <br><br>
+            <strong><br>Model 1- Displacement based on polling with fixed velocity</strong>
+                <br>Arrow key up: Move forward [Fixed velocity parameter] pixels per second
+                <br>Arrow Key down: Move backwards [fixed velocity parameter] pixels per second
+                <br>Arrow Key : Rotate ship clockwise [Angle velocity] degrees
+                <br>Arrow Key : Rotate ship counter-clockwise [Angle velocity] degrees
+                <br>Spacebar: Shoot laser
+                <br>Arrow key up + t : move forward with a boost (Progress bar shows turbo time- max 3 seconds)
+                <br>Pick up power up(star): Will allow the ship to have infinite turbo for 5 seconds 
+            <br><br>
+            <strong><br>Model 2- displacement based on polling with fixed acceleration</strong>
+                <br><i>In this mode, the ship will continue to float around the canvas, simulating space. In this game we added an "Atmosphere" resistance, which will cause the ship's velocity to drop slowly. </i><br>
+
+                <br>Arrow key up: Move forward [Fixed acceleration * vx] pixels per second
+                <br>Arrow Key down: Move backwards [fixed acceleration *vy] pixels per second
+                <br>Arrow Key : Rotate ship clockwise [Angle velocity] degrees
+                <br>Arrow Key : Rotate ship counter-clockwise [Angle velocity] degrees
+                <br>Spacebar: Shoot laser
+                <br>Arrow key up + t : move forward with a boost (Progress bar shows turbo time- max 3 seconds)
+                <br>Pick up power up(star): Will allow the ship to have infinite turbo for 5 seconds 
+        </span></small></td>
+    </tr>
+
+    
     </tbody></table>
     </td>
     
