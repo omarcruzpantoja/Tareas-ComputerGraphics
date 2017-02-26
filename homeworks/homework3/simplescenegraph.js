@@ -27,6 +27,45 @@ node.setTranslation(50,0)
 node.draw(ctx)
 */
 
+
+var canvas;
+var ctx;
+var w,h;
+
+var params
+function initParams() {
+    params = {
+        'x0': canvas.width/2,
+        'y0': 280,
+        'a1': 20,
+        'a2': 90,
+        'a3': 0,
+    }
+}
+
+/* ### GUI ### */
+var gui;        
+function initGUI() 
+{
+    gui = new dat.GUI({ autoPlace: true });
+
+    gui.add(params,'x0').min(0).max(w).step(1)
+                        .onChange(onParamsChange)//.listen()
+    gui.add(params,'y0').min(0).max(h).step(1)
+                        .onChange(onParamsChange)//.listen()
+    gui.add(params,'a1').min(-80).max(120).step(1)
+                           .onChange(onParamsChange)//.listen()
+    gui.add(params,'a2').min(-80).max(150).step(1).onChange(onParamsChange)
+    gui.add(params,'a3').min(0).max(+150).step(0.1)
+                        .onChange(onParamsChange)//.listen()
+    
+    //var parent = document.getElementById('controls');      
+    //parent.appendChild(gui.domElement);
+}
+// GUI callback when parameters are changed manually in the GUI
+function onParamsChange() {
+    drawAll()
+}
 // Node creation
 function SGNode(onDraw, parent) {
     this.translation = [0,0]
@@ -106,4 +145,23 @@ SGNode.prototype.setScaling = function(sx,sy) {
     this.scaling[0] = sx
     this.scaling[1] = sy
     return this;
+}
+
+function start() {
+    canvas = document.getElementById('canvas');
+    ctx = canvas.getContext('2d');
+    
+    w = canvas.width;
+    h = canvas.height;
+
+    // Do init
+    initParams()
+    //initGUI()
+    //initKeys(canvas)
+    
+    // Draw for the first time
+    // drawAll()
+
+    // Launch main animation loop
+    //onTick()
 }

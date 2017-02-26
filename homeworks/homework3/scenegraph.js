@@ -17,9 +17,9 @@
     function initParams() {
         params = {
             'x0': canvas.width/2,
-            'y0': canvas.height/2 + canvas.height/4,
+            'y0': 280,
             'a1': 20,
-            'a2': 0,
+            'a2': 90,
             'a3': 0,
         }
     }
@@ -77,6 +77,9 @@
     /* ### Drawing ### */
     function drawArm(ctx) {
         // TODO
+
+        ctx.translate(params.x0 -40, params.y0 -160*3/4 )
+        ctx.rotate(params.a1 * Math.PI/180) ;
         ctx.strokeStyle="red";
        // ctx.strokeText('Draw arm here', 0,0)
         radius = 13;
@@ -100,6 +103,9 @@
     }
     function drawUpperLeg(ctx) {
         // TODO
+        ctx.translate(params.x0 - 40, params.y0 - 35)
+        ctx.rotate(params.a2 * Math.PI/180) ;
+
         ctx.strokeStyle="green";
         radius = 13;
 
@@ -115,11 +121,18 @@
         ctx.closePath() 
         ctx.lineWidth = 2 ;
         ctx.stroke() ;
+
+        ctx.save()
+        ctx.translate(60,0)
+        ctx.rotate((params.a3-90) * Math.PI/180) ;
+        drawLowerLeg(ctx)
+        ctx.restore()
+
     }
     function drawLowerLeg(ctx) {
         // TODO
         radius = 13;
-
+        ctx.strokeStyle = "blue"
         ctx.beginPath() ;
         ctx.arc(0, 0, radius ,0,Math.PI*2,false) ;
         ctx.closePath();
@@ -140,6 +153,19 @@
     }
     function drawBody(ctx) {
         // TODO
+
+
+        ctx.save() ;
+        drawArm(ctx) ;
+        ctx.restore() ;
+        
+
+        ctx.save()
+        drawUpperLeg(ctx)
+        ctx.restore()
+        
+
+        ctx.translate(params.x0, params.y0)
         ctx.strokeStyle="black";
 
         ctx.lineWidth = 2 ;
@@ -174,31 +200,10 @@
         ctx.setTransform(1,0,0, 1,0,0)
         ctx.clearRect(0,0,canvas.width,canvas.height)
 
-        ctx.save()
-        ctx.translate(params.x0 -40, params.y0 -160*3/4 )
-        ctx.rotate(params.a1 * Math.PI/180) ;
-        drawArm(ctx)
-        ctx.restore()
-        
-        ctx.save()
-        ctx.translate(params.x0 - 40, params.y0 - 35)
-        ctx.rotate(params.a2 * Math.PI/180) ;
-        drawUpperLeg(ctx)
-        ctx.restore()
-        
-        ctx.save()
-        xPosition = Math.cos(params.a2*Math.PI/180) *25;
-        yPosition = Math.cos(params.a2*Math.PI/180) *35 ;
-        ctx.translate(params.x0 + xPosition, params.y0- yPosition )
-        ctx.rotate(params.a3 * Math.PI/180) ;
-        drawLowerLeg(ctx)
-        ctx.restore()
-        
-        ctx.save()
-        ctx.translate(params.x0, params.y0)
-       // ctx.rotate(params.a3 * Math.PI/180) ;
-        drawBody(ctx)
-        ctx.restore()
+    
+        ctx.save() ;
+        drawBody(ctx) ;
+        ctx.restore() ;
     }
 
     /* ### Initialization ### */ 
