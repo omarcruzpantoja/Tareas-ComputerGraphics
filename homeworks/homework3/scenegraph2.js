@@ -3,32 +3,6 @@
 /* Co Author: Omar Cruz Pantoja 2017
     801-14-1672
     CCOM-4995 COMPUTER GRAPHICS*/
-    
-/* For a scene graph structure with deeper Object Oriented approach,
-see the source code of http://math.hws.edu/graphicsbook/demos/c2/cart-and-windmills.html
-*/
-
-/* Usage:
-// Define node drawing callbackS
-onDraw1=function(ctx,node) {
-    ctx.beginPath()
-    ctx.rect(0,0,10,10)
-    ctx.stroke()
-}
-onDraw2=function(ctx,node) {
-    ...
-}
-// Create new node
-node = new SGNode(onDraw1)
-node.setTranslation(30,10)
-node.setRotation(45)
-// Create child node
-child = new SGNode(onDraw2, node)
-node.setTranslation(50,0)
-
-// In event or timer callback, draw the node and its child
-node.draw(ctx)
-*/
 
 
 var canvas;

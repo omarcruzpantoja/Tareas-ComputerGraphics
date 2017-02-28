@@ -19,8 +19,9 @@ var ctx;
 var w,h;
 var imageObj = [] ;  
 var images ;
-var params
+var params ;
 var bulletCoords = [] ;
+var asteroid ;
 function initParams() {
     params = {
         'x0': canvas.width/2,
@@ -40,7 +41,10 @@ function initParams() {
     }
     bulletCoords["width"] = 5 ,
     bulletCoords["height"] = 14  ;
-    images = ['images/nebula.jpg', 'images/ship.png', 'images/thruster.png', 'images/bullet.png', 'images/powerUp.png'] ; 
+    bulletCoords["xd"] = 0 ;
+    bulletCoords["yd"] = 0 ;
+    images = ['images/nebula.jpg', 'images/ship.png', 'images/thruster.png', 'images/bullet.png', 'images/powerUp.png', 'images/asteroid.png'] ; 
+    updateAsteroid() ;
 
 }
 
@@ -219,7 +223,7 @@ var powerOn = false ;
 var powerShow = false ;
 var powerShowT ;
 var powerTimer = 5;
-var powerUpTime;
+var powerUpTime = 0;
 
 counter  =0 ;
 
@@ -243,14 +247,7 @@ function onTick() {
         animate();
         drawAll();
 
-    //Get random to get power up
-    if(Math.floor(Math.random() * 60) ==30 && !powerShow)
-    {
-        power["x"] =   Math.floor(Math.random() * (canvas.width-50));
-        power["y"] =   Math.floor(Math.random() * (canvas.height-50)) ;
-        powerShow =true ;
-        powerShowT= powerTimer+2 ;
-    }    
+ 
 
     //console.log(turboTime) ;
     requestAnimFrame(onTick);
@@ -283,9 +280,6 @@ function animate() {
                 }
             }
 
-
-
-   
     }
     //We are in space, use fixed acceleration
     if (params.mode==2) {
@@ -348,7 +342,21 @@ function animate() {
         if(powerUpTime<=0)
             turboTime -= elapsed ;
     }
-    
+
+
+    //If the key is not pressed, charge up the progress bar
+    if(turboTime < 3 && turboOff)
+    {
+        turboTime += elapsed /10;
+        // console.log("aye") ;
+        document.getElementById("turbo").value= (turboTime) ;
+
+    }
+    //When key is unpressed, remove turbo boost
+    else if(!turboOff && turboTime <= 0 && boost == actualBoost)
+        boost = 0 ;
+    //### END TURBO MODEL ###
+
     //Right or left key pressed Reposition ship based using angle velocity
     if(!isKeyDown(37) && isKeyDown(39) || isKeyDown(37) && !isKeyDown(39))
     {
@@ -374,39 +382,64 @@ function animate() {
         }
     }
 
+    //###BULLET SHOT ###
     //Spacebar pressed (Bullet will be shot)
     if(isKeyDown(32) && !bulletShot)
     {
         //Set starting position of bulets
-        bulletCoords[0] = { "x":  -11, "y" :-12} ;
-        bulletCoords[1] = { "x": 6, "y" :  -12} ;
+        bulletCoords[0] = { "x":  0, "y" :0} ;
+   
         
-        //Get ships location and angle
-        bulletCoords["angle"] = params.angle  ;
+        //Get ships location and angle 
+        bulletCoords["angle"] = params.angle * Math.PI/180 ;
         bulletCoords["x"] = params.x0 ;
         bulletCoords["y"] = params.y0 ;
-     //   console.log(params.angle) ;
+
+        //Locate bullets based on canvas
+        bulletCoords[0]["xd"] = params.x0 
+        bulletCoords[0]["yd"] = params.y0 ;
+
+
+    
         bulletShot = true ;
         bulletTimer = 0;
     }
-
     //Update bullet data
-
-    if(bulletTimer < 2 && bulletShot)
+    else if(bulletTimer < 2 && bulletShot)
     {
         // console.log("aye") ;
         bulletTimer += elapsed ;            
-        for(i =0; i < 2;i++)  
-            bulletCoords[i]["y"] -= 200*elapsed ;
-
+         
+            bulletCoords[0]["y"] -= 200*elapsed ;
+      
+            bulletCoords[0]["xd"] += 200 * elapsed * Math.cos(bulletCoords["angle"]-Math.PI/2)
+            bulletCoords[0]["yd"] += 200 * elapsed * Math.sin(bulletCoords["angle"]-Math.PI/2) ;
+            
+            deltaY = bulletCoords[0]["yd"] - asteroid.y
+            deltaX = bulletCoords[0]["xd"] - asteroid.x ;
+            dBulletAsteroid = Math.sqrt(deltaX*deltaX + deltaY*deltaY) ;
+           
+            if(dBulletAsteroid <= 25)
+            {
+               updateAsteroid() ;
+               bulletTimer = 2;
+            }
         
     }
-
     else if(bulletTimer>=2 && bulletShot)
         bulletShot = false ;
 
+    //###POWERUP MODEL
     //Update power up location data
-    if(powerShow)
+        //Get random to get power up
+    if(Math.floor(Math.random() * 1200) ==1 && !powerShow)
+    {
+        power["x"] =   Math.floor(Math.random() * (canvas.width-50));
+        power["y"] =   Math.floor(Math.random() * (canvas.height-50)) ;
+        powerShow =true ;
+        powerShowT= powerTimer+5 ;
+    }   
+    else if(powerShow)
     {
         deltaY = params.y0 - power["y"] ; 
         deltaX = params.x0 - power["x"] ;
@@ -429,6 +462,32 @@ function animate() {
         document.getElementById("power").innerHTML = "INFINITE TURBO ON [OFF]" ;
 
 
+    //### ASTEROID POSITION UPDATE
+    asteroid.x += asteroid.vx * elapsed ;
+    asteroid.y += asteroid.vy * elapsed ;
+
+    if(asteroid.y >= canvas.height)
+        asteroid.y = 1 ;
+    else if(asteroid.y <= 0)
+        asteroid.y = canvas.height-1 ;
+    else if(asteroid.x >= canvas.width)
+        asteroid.x = 1 ;
+    else if(asteroid.x <= 0)
+        asteroid.x = canvas.width -1;
+
+    //#CHECK IF SHIP HIT THE ASTEROID
+    deltaY = params.y0 - asteroid["y"] ; 
+    deltaX = params.x0 - asteroid["x"] ;
+    dShipAsteroid = Math.sqrt(deltaX *deltaX + deltaY*deltaY) ;
+    if(dShipAsteroid < 40)
+    {
+       params.x0 = 250 ;
+       params.y0 = 200;
+       params.vy = 0  ;
+       params.vx = 0 ;
+       updateAsteroid() ;
+    }
+
 }
 
 function drawPower(ctx) {
@@ -440,41 +499,31 @@ function drawBullets(ctx) {
     ctx.setTransform(1,0,0, 1,0,0)
 
     //Position the bullets
-    angle = bulletCoords["angle"] * Math.PI/180 ;
+
+    angle = bulletCoords["angle"] 
     ctx.translate(bulletCoords["x"], bulletCoords["y"]) ;
     ctx.rotate(angle) ;
-
-    //Draw the bullets
-    for(i =0; i < 2;i++)  
-        ctx.drawImage(imageObj[3], bulletCoords[i]["x"], bulletCoords[i]["y"], bulletCoords["width"] , bulletCoords["height"]) ;
+ 
     
+    //Draw the bullets
+    ctx.drawImage(imageObj[3], bulletCoords[0]["x"], bulletCoords[0]["y"], bulletCoords["width"] , bulletCoords["height"]) ;
+    
+    
+   
 }
 function drawTurbo(ctx){
-
-    //If the key is not pressed, charge up the progress bar
     
-    if(turboTime < 3 && turboOff)
-    {
-        turboTime += elapsed /10;
-        // console.log("aye") ;
-        document.getElementById("turbo").value= (turboTime) ;
+   //Draw the thruters
 
-    }
+    ctx.drawImage(imageObj[2], -4, 14, 18,37);
+    ctx.drawImage(imageObj[2], -14, 14, 18,37);
+   // turboTime-=elapsed ;
+    if(Math.floor(turboTime) < 0)
+        turboTime = 0 ;
+    document.getElementById("turbo").value = (turboTime) ;
 
-    //Draw the thruters
-    else if(!turboOff && turboTime > 0 && isKeyDown(38))
-    {
-
-        ctx.drawImage(imageObj[2], -4, 14, 18,37);
-        ctx.drawImage(imageObj[2], -14, 14, 18,37);
-       // turboTime-=elapsed ;
-        if(Math.floor(turboTime) < 0)
-            turboTime = 0 ;
-        document.getElementById("turbo").value = (turboTime) ;
-    }
     //When key is unpressed, remove turbo boost
-    else if(!turboOff && turboTime <= 0 && boost == actualBoost)
-        boost = 0 ;
+    
 
 }
 function drawShip(ctx) {
@@ -485,11 +534,17 @@ function drawShip(ctx) {
     ctx.translate(params.x0, params.y0) ;
     angleInRad = params.angle * Math.PI / 180 ;
     ctx.rotate(angleInRad) ;
+    ctx.strokeStyle = "red"
 
+ 
     //Draw the ship
     ctx.drawImage(imageObj[1], -15,-15,30, 30) 
 }
 
+function drawAsteroid(ctx) {
+    ctx.drawImage(imageObj[5], asteroid.x -asteroid.imgRadius/2, asteroid.y-asteroid.imgRadius/2, asteroid.imgRadius, asteroid.imgRadius)
+
+}
 
 function drawAll() {
     // Reset transform before clearing the canvas
@@ -509,19 +564,35 @@ function drawAll() {
     else if(powerShowT <= 0)
         powerShow = false ;
 
-
+    
+    drawAsteroid(ctx) ;
     //Draw bullet when shot
     if(bulletShot)
        drawBullets(ctx) ;
+
 
    //Draw the ship
     drawShip(ctx)
     
     //Draw turbo when on
-    drawTurbo(ctx) ;
+    if(!turboOff && turboTime > 0 && isKeyDown(38))
+        drawTurbo(ctx) ;
     
+
     }
 
+function updateAsteroid() {
+    asteroid ={
+        'x' : Math.floor(Math.random() * (canvas.height-50)),
+        'y' :  Math.floor(Math.random() * (canvas.width-50)),
+        'radius' : 25,
+        'vx':  Math.floor(Math.random() *101) - 50 ,
+        'vy':  Math.floor(Math.random() * 101) - 50 ,
+        'imgRadius' : 100 ,
+        'angle' : Math.floor(Math.random() * 360 ) - 180
+    }   
+
+}
 /* ### Initialization ### */
 function start() {
     canvas = document.getElementById('canvas');
