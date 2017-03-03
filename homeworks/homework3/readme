@@ -10,7 +10,6 @@ myAsteroid.html-> Simulation of asteroid game
 asteroid.js-> model changes for the asteroid game 
 
 myScenegraph.html-> Robot scenegraph with the joints being capable of being changed
-scenegraph.js-> Implementation using only rotation and translate
-scenegraph2.js-> Implementation using SG nodes 
+scenegraph2.js-> Implementation using SG nodes and raw translation/rotation 
 
-Both implementations have the same effect on the scenegraph, if wish to try between one and the other, change the src js in myScenegraph.html
+

@@ -17,6 +17,7 @@ function initParams() {
         'a1': 20,
         'a2': 90,
         'a3': 0,
+        'SGNodes' : false 
     }
 }
 
@@ -35,13 +36,17 @@ function initGUI()
     gui.add(params,'a2').min(-80).max(150).step(1).onChange(onParamsChange)
     gui.add(params,'a3').min(0).max(+150).step(0.1)
                         .onChange(onParamsChange)//.listen()
+    gui.add(params, 'SGNodes').onChange(onParamsChange) 
     
     //var parent = document.getElementById('controls');      
     //parent.appendChild(gui.domElement);
 }
 // GUI callback when parameters are changed manually in the GUI
 function onParamsChange() {
-    drawAll()
+    if(params.SGNodes) 
+        drawAll() ;
+    else
+        drawAll1() ;
 }
 // Node creation
 function SGNode(onDraw, parent) {
@@ -126,6 +131,7 @@ SGNode.prototype.setScaling = function(sx,sy) {
 }
 drawArm = function (ctx, node) {
     ctx.strokeStyle="red";
+    ctx.lineWidth = 3 ;
     radius = 13;
 
     //Draw circle 
@@ -141,7 +147,7 @@ drawArm = function (ctx, node) {
     ctx.lineTo(-1*(radius + 6), radius+3) ;
     ctx.closePath() ;
 
-    ctx.lineWidth = 2 ;
+    ctx.lineWidth = 4 ;
     ctx.stroke() ;    
 }
 
@@ -160,7 +166,7 @@ drawUpperLeg = function (ctx, node) {
     ctx.lineTo(radius*2 + 58, (radius+9)) ;
     ctx.lineTo(-1*(radius + 8), radius+9) ;
     ctx.closePath() 
-    ctx.lineWidth = 2 ;
+    ctx.lineWidth = 4 ;
     ctx.stroke() ;
 }
 
@@ -185,14 +191,14 @@ drawLowerLeg = function (ctx, node) {
     ctx.lineTo(radius + 40,(radius*2+50)) ;
     ctx.lineTo(radius + 40,(radius*2+30)) ;
     ctx.lineTo(radius + 9,(radius*2+30)) ;
-    ctx.lineWidth = 2 ;
+    ctx.lineWidth = 4 ;
     ctx.stroke() ;
 }
 drawBody = function (ctx, node) {
   
     ctx.strokeStyle="black";
 
-    ctx.lineWidth = 2 ;
+    ctx.lineWidth = 4 ;
     radius = 40 ;
 
     //Draws head
@@ -254,6 +260,149 @@ function drawAll() {
 
 }
 
+
+
+
+
+  /* ### Drawing ### */
+  /* ### MODE 0  ### */
+    function drawArm1(ctx) {
+        // TODO
+
+        ctx.translate(params.x0 -40, params.y0 -160*3/4 )
+        ctx.rotate(params.a1 * Math.PI/180) ;
+        ctx.strokeStyle="red";
+       // ctx.strokeText('Draw arm here', 0,0)
+        radius = 13;
+
+        ctx.beginPath() ;
+        ctx.arc(0, 0, radius ,0,Math.PI*2,false) ;
+        ctx.closePath();
+        
+
+        ctx.moveTo(-1*(radius + 6), -1*(radius + 3)) ;
+        ctx.lineTo(radius*2 + 85, -1*(radius+3)) ;
+        ctx.lineTo(radius*2 + 85, (radius+3)) ;
+        ctx.lineTo(-1*(radius + 6), radius+3) ;
+        ctx.closePath() ;
+
+       // ctx.beginPath() ;
+        ctx.lineWidth = 2 ;
+        ctx.stroke() ;
+
+
+    }
+    function drawUpperLeg1(ctx) {
+        // TODO
+        ctx.translate(params.x0 - 40, params.y0 - 35)
+        ctx.rotate(params.a2 * Math.PI/180) ;
+
+        ctx.strokeStyle="green";
+        radius = 13;
+
+        ctx.beginPath() ;
+        ctx.arc(0, 0, radius ,0,Math.PI*2,false) ;
+        ctx.closePath();
+        
+
+        ctx.moveTo(-1*(radius + 8), -1*(radius + 9)) ;
+        ctx.lineTo(radius*2 + 58, -1*(radius+9)) ;
+        ctx.lineTo(radius*2 + 58, (radius+9)) ;
+        ctx.lineTo(-1*(radius + 8), radius+9) ;
+        ctx.closePath() 
+        ctx.lineWidth = 2 ;
+        ctx.stroke() ;
+
+        ctx.save()
+        ctx.translate(60,0)
+        ctx.rotate((params.a3-90) * Math.PI/180) ;
+        drawLowerLeg1(ctx)
+        ctx.restore()
+
+    }
+    function drawLowerLeg1(ctx) {
+        // TODO
+        radius = 13;
+
+        //Draw circle (joint) 
+        ctx.strokeStyle = "blue"
+        ctx.beginPath() ;
+        ctx.arc(0, 0, radius ,0,Math.PI*2,false) ;
+        ctx.closePath();
+        
+        //Draw leg extension
+        ctx.moveTo(-1*(radius + 9), -1*(radius*2 -2)) ;
+        ctx.lineTo(radius + 9, -1*(radius*2-2)) ;
+        ctx.lineTo(radius + 9, (radius*2+50)) ;
+        ctx.lineTo(-1*(radius + 9), radius*2+50) ;
+        ctx.closePath() 
+
+        //Draw feet
+        ctx.moveTo(radius + 9, (radius*2+50)) ;
+        ctx.lineTo(radius + 40,(radius*2+50)) ;
+        ctx.lineTo(radius + 40,(radius*2+30)) ;
+        ctx.lineTo(radius + 9,(radius*2+30)) ;
+        ctx.lineWidth = 2 ;
+        ctx.stroke() ;
+    }
+    function drawBody1(ctx) {
+        // TODO
+
+        ctx.save() ;
+        drawArm1(ctx) ;
+        ctx.restore() ;
+        
+
+        ctx.save()
+        drawUpperLeg1(ctx)
+        ctx.restore()
+        
+
+        ctx.translate(params.x0, params.y0)
+        ctx.strokeStyle="black";
+
+        ctx.lineWidth = 2 ;
+
+        radius = 40 ;
+       // ctx.strokeText('Draw body here', 0,0)
+        ctx.beginPath() ;
+        ctx.arc(-40,-1*(160+radius), radius, 0, 2*Math.PI, false) ;
+        ctx.closePath() ;
+            ctx.stroke() ;
+
+        ctx.beginPath() ;
+        ctx.ellipse(-20, -1*(178+radius), 10, 7, 0, 0, Math.PI*2, false) ;
+        ctx.closePath();
+        
+        ctx.moveTo(-40 - radius*Math.cos(5*Math.PI/4), -(160+radius) -radius*Math.sin(5*Math.PI/4)) ;
+        ctx.lineTo(-35, -195) ;
+
+
+        ctx.moveTo(0,0) ;
+        ctx.lineTo(0,-160) ;
+        ctx.lineTo(-80,-160) ;
+        ctx.lineTo(-80,0) ;
+        ctx.closePath() ;
+
+        ctx.stroke() ;
+
+
+    }
+
+    function drawAll1() {
+        // Reset transform before clearing the canvas
+        ctx.setTransform(1,0,0, 1,0,0)
+        ctx.clearRect(0,0,canvas.width,canvas.height)
+
+    
+        ctx.save() ;
+        drawBody1(ctx) ;
+        ctx.restore() ;
+    }
+
+
+
+
 function start() {
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');
@@ -267,7 +416,7 @@ function start() {
     //initKeys(canvas)
     
     // Draw for the first time
-    drawAll()
+    drawAll1() ;
 
     // Launch main animation loop
     //onTick()
