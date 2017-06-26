@@ -1,3 +1,8 @@
+// Omar Cruz Pantoja
+// 801-14-1672
+// CCOM 4995- COMPUTER GRAPHICS 
+// Prof. Remi Megret
+
 var camera, scene, renderer;
 var geometry, material, mesh;
 var torus;
