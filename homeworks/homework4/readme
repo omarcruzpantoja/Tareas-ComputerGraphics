@@ -1,38 +1,4 @@
-<!DOCTYPE>
-<html lang = "en">
-
-<head>
-<title>Tarea Part1</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-  <style>
-    canvas {
-      border: dashed 2px gray;
-    }
-    canvas:focus { /* Make clear when canvas does not listen to keyboard */
-      border: solid 2px black;
-    }
-    kbd { 
-        font-family: Menlo, Monaco, Consolas, "Courier New", monospace;   
-        font-size: 90%; background-color: #ddd;
-        border: solid 1pt black; border-radius: 4px; padding: 0px 4px;
-    }
-  </style>
-</head>
-<script src = "3DContent.js"></script>
-<script src="lib/three.min.js"></script>
-<script src="js/controls/OrbitControls.js"></script>
-<script src="js/controls/FlyControls.js"></script>
-<script src="js/loaders/OBJLoader.js"></script>
-<script src="lib/dat.gui.js"></script>
-<script src="js/loaders/OBJLoader.js"></script>
-
-<body onload = "start()">
-
-		<canvas id = "canvas" width = "400" height = "400"></canvas>
-	
-
-  <p><h2><strong>Description</strong></h2></p>
+ <p><h2><strong>Description</strong></h2></p>
 </br>This scene is an experiment to test out the different functionalities in the THREE.js library and learn how to handle 3D scenes.
 </br>In this scene we've got a plane textured with an image that "locates" positions within the plane.
 </br>In the positive Y axis all the objects are located. We've got a male model, a teapot, a torus, a pyramid and a "robot".
@@ -71,6 +37,3 @@ Variable <strong>px1</strong> relocate x coordinate of torus
 <br>Variable <strong>rx1</strong> rotate the torus along X axis
 <br>Variable <strong>ry1</strong> rotate the torus along the Y axis
 <br>Variable <strong>rz1</strong> rotate the torus alond the Z axis
-
-</body>
-</html>
