@@ -1,3 +1,15 @@
+File description:
+
+3DScene.html- Contains the front end page, includes the description of how to use all interactions applied to the canvas content.
+
+3DContent.js- Contains the javascript content of the page(used to manipulate the canvas and interaction to the page)
+
+moretexture- folder containing textures applied in the page
+
+models- contains information of objects implemented in the page
+
+lib/js - JS libraries used 
+
 Description
 This scene is an experiment to test out the different functionalities in the THREE.js library and learn how to handle 3D scenes.
 In this scene we've got a plane textured with an image that "locates" positions within the plane.
