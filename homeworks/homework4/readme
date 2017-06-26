@@ -1,39 +1,38 @@
- <p><h2><strong>Description</strong></h2></p>
-</br>This scene is an experiment to test out the different functionalities in the THREE.js library and learn how to handle 3D scenes.
-</br>In this scene we've got a plane textured with an image that "locates" positions within the plane.
-</br>In the positive Y axis all the objects are located. We've got a male model, a teapot, a torus, a pyramid and a "robot".
-<br>The male model, pyramid and teapot don't include any interactions, meanwhile the robot and torus do(Datgui and keyboard input) . 
-<br><h4>**IN ORDER TO SEE ALL DETAILS, MOVE THE CANVAS CAMERA WITH THE MOUSE OR PRESS ANY KEY INSIDE THE CAVAS (lines around the canvas square are solid) **</h4>
+Description
+This scene is an experiment to test out the different functionalities in the THREE.js library and learn how to handle 3D scenes.
+In this scene we've got a plane textured with an image that "locates" positions within the plane.
+In the positive Y axis all the objects are located. We've got a male model, a teapot, a torus, a pyramid and a "robot".
+The male model, pyramid and teapot don't include any interactions, meanwhile the robot and torus do(Datgui and keyboard input) . 
+<h4>**IN ORDER TO SEE ALL DETAILS, MOVE THE CANVAS CAMERA WITH THE MOUSE OR PRESS ANY KEY INSIDE THE CAVAS (lines around the canvas square are solid) **IN THE CASE OF USING GOOGLE CHROME: RUN COMMAND python -m SimpleHTTPServer in terminal in order to run the page</h4>
 
+Key interactions with robot
+Key w Move the robot forward direction
+Key s Move the robot backwards direction
+Key d Rotate the robot to the left in current location
+Key a Rotate the robot to the right in current location
+Key c Make the camera be set in third person behind the robot. Press  again to return to "Orbit" view. 
 
-<h3><strong>Key interactions with robot</strong></h3> 
-Key <strong>w </strong> Move the robot forward direction
-<br>Key <strong>s </strong> Move the robot backwards direction
-<br>Key <strong>d </strong> Rotate the robot to the left in current location
-<br>Key <strong>a </strong> Rotate the robot to the right in current location
-<br>Key <strong>c </strong> Make the camera be set in third person behind the robot. Press <strong>c</strong> again to return to "Orbit" view. 
+Datgui interactions with robot
+Variable px relocate x coordinate of robot
+Variable py relocate y coordinate of robot
+Variable pz relocate z coordinate or robot
+Variable rx rotate the robot along X axis
+Variable ry rotate the robot along the Y axis
+Variable rz rotate the robot alond the Z axis
 
-<h3><strong>Datgui interactions with robot</strong></h3> 
-Variable <strong>px1</strong> relocate x coordinate of robot
-<br>Variable <strong>py1</strong> relocate y coordinate of robot
-<br>Variable <strong>pz1</strong> relocate z coordinate or robot
-<br>Variable <strong>rx1</strong> rotate the robot along X axis
-<br>Variable <strong>ry1</strong> rotate the robot along the Y axis
-<br>Variable <strong>rz1</strong> rotate the robot alond the Z axis
+Key interactions with Torus 
+Key  shift+w change torus material to basic and show wireframe.
+Key  shift+l change torus material to lambert.
+Key  shift+p change torus material to phong and apply shinniness and specular.
+Key  shift+f change torus material to phong material with flat shading. 
 
-<h3><strong>Key interactions with Torus</strong></h3> 
-Key <strong> shift+w </strong> change torus material to basic and show wireframe.
-<br>Key <strong> shift+l </strong> change torus material to lambert.
-<br>Key <strong> shift+p </strong> change torus material to phong and apply shinniness and specular.
-<br>Key <strong> shift+f </strong> change torus material to phong material with flat shading. 
-
-<h3><strong>Datgui interactions with Torus</strong></h3> 
-Variable <strong>px1</strong> relocate x coordinate of torus
-<br>Variable <strong>py1</strong> relocate y coordinate of torus
-<br>Variable <strong>pz1</strong> relocate z coordinate or torus
-<br>Variable <strong>sx1</strong> rescale the torus along X axis
-<br>Variable <strong>sy1</strong> rescale the torus along the Y axis
-<br>Variable <strong>sz1</strong> rescale the torus alond the Z axis
-<br>Variable <strong>rx1</strong> rotate the torus along X axis
-<br>Variable <strong>ry1</strong> rotate the torus along the Y axis
-<br>Variable <strong>rz1</strong> rotate the torus alond the Z axis
+Datgui interactions with Torus 
+Variable px relocate x coordinate of torus
+Variable py relocate y coordinate of torus
+Variable pz relocate z coordinate or torus
+Variable sx rescale the torus along X axis
+Variable sy rescale the torus along the Y axis
+Variable sz rescale the torus alond the Z axis
+Variable rx rotate the torus along X axis
+Variable ry rotate the torus along the Y axis
+Variable rz rotate the torus alond the Z axis
