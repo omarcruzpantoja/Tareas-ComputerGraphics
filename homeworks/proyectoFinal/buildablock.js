@@ -5,8 +5,7 @@ var currentLoad ;
 var Coords = {
 	"play" : [],
 
-	"easyCoords" : [[200,200]] ,
-	"easyVertices" : [ [ [200,200],[200,400],[400,400],[400,200] ] ] , 
+	"easyCoords" : [[200,200,200,200]]  ,
 	isDragging: false
 }
 
@@ -14,6 +13,7 @@ function initListeners()
 {
 	canvas.addEventListener("mousedown", mouseDown, false) ;
 	canvas.addEventListener("mousemove", mouseMove, false) ;
+	canvas.addEventListener("mouseup", mouseUp, false) ;
 } 
 
 function init() {
@@ -58,13 +58,13 @@ function mouseDown(event)
 	}
 }
 
-function mouseMove(event) {
+function mouseUp(event)
+{
 
-	canvasPos = canvas.getBoundingClientRect() ;
-	x = event.clientX - canvasPos.left ;
-	y = event.clientY - canvasPos.top ;
+	// console.log(event);
 	if(currentLoad == "mainMenu")
 	{
+		
 
 	}
 	else if(currentLoad == "Instructions")
@@ -73,45 +73,30 @@ function mouseMove(event) {
 	}
 	else if(currentLoad == "difficultySelect") 
 	{
+		
 
-
-
-		// var description = ["The easy challenges include the exact amount of pieces required to draw "]
-		if(isInsideEllipse(140,60,x,y,canvas.width/2-200, canvas.height/4+40))
-		{
-			difficultySelect() ;
-			getInfoSelector(canvas.width/2-200, canvas.height/4+40)
-		}
-		else if(isInsideEllipse(140,60,x,y,canvas.width/2-200, canvas.height/4*2+40))
-		{
-			difficultySelect() ;
-			getInfoSelector(canvas.width/2-200, canvas.height/4*2+40) ;
-		}
-		else if(isInsideEllipse(140,60,x,y,canvas.width/2-200, canvas.height/4*3+40))
-		{
-			difficultySelect() ;
-			getInfoSelector(canvas.width/2-200, canvas.height/4*3+40, true) ;
-		}	
 	}
 	else if(currentLoad == "easyMode") 
 	{
-		// console.log(Coords.isDragging)
 		if(Coords.isDragging)
 		{
+			Coords.isDragging = false; 
 			canvasPos = canvas.getBoundingClientRect() ;
 			x = event.clientX - canvasPos.left ;
 			y = event.clientY - canvasPos.top ;
-			// console.log(Coords.dragCoord[0][0]-x)
-			// console.log(Coords["easyVertices"][0][0][0] )
-			console.log(Coords["easyVertices"][0][0])
-			Coords["easyVertices"][0][0] = Coords["easyVertices"][0][0][0] + Coords.dragCoord[0][0]-x ;
-			// console.log(Coords["easyVertices"][0][0]+"\n")
-
+			x = x - Coords.dragCoord[0][0] ; 
+			y = Coords.dragCoord[0][1] - y  ;
+			console.log(x,y);
+			// Coords["easyCoords"][0][0] = x - Coords["easyCoords"][0][0]  ;
+			// Coords["easyCoords"][0][1] =10 ;
+			Coords["easyCoords"][0][0] = Coords["easyCoords"][0][0]+x
+			Coords["easyCoords"][0][1] = Coords["easyCoords"][0][1]-y
+			easyMode() ;
 		}
-		easyMode() ;
-	}	
-
+	}
 }
+
+
 
 function clickMenu(event){
 	canvasPos = canvas.getBoundingClientRect() ;
@@ -142,7 +127,56 @@ function clickDifficulty(event) {
 
 	}	
 }
+function mouseMove(event) {
 
+	canvasPos = canvas.getBoundingClientRect() ;
+	x = event.clientX - canvasPos.left ;
+	y = event.clientY - canvasPos.top ;
+	if(currentLoad == "mainMenu")
+	{
+
+	}
+	else if(currentLoad == "Instructions")
+	{
+
+	}
+	else if(currentLoad == "difficultySelect") 
+	{
+
+		// var description = ["The easy challenges include the exact amount of pieces required to draw "]
+		if(isInsideEllipse(140,60,x,y,canvas.width/2-200, canvas.height/4+40))
+		{
+			difficultySelect() ;
+			getInfoSelector(canvas.width/2-200, canvas.height/4+40)
+		}
+		else if(isInsideEllipse(140,60,x,y,canvas.width/2-200, canvas.height/4*2+40))
+		{
+			difficultySelect() ;
+			getInfoSelector(canvas.width/2-200, canvas.height/4*2+40) ;
+		}
+		else if(isInsideEllipse(140,60,x,y,canvas.width/2-200, canvas.height/4*3+40))
+		{
+			difficultySelect() ;
+			getInfoSelector(canvas.width/2-200, canvas.height/4*3+40, true) ;
+		}	
+	}
+	else if(currentLoad == "easyMode") 
+	{
+		// console.log(Coords.isDragging)
+		if(Coords.isDragging)
+		{
+			canvasPos = canvas.getBoundingClientRect() ;
+			x = event.clientX - canvasPos.left ;
+			y = event.clientY - canvasPos.top ;
+			x = x - Coords.dragCoord[0][0] ; 
+			y = Coords.dragCoord[0][1] - y  ;
+			// console.log(x,y) ;
+			easyMode(x,y) ;
+		}
+		
+	}	
+
+}
 function clickEasyMode(event) {
 
 	canvasPos = canvas.getBoundingClientRect() ;
@@ -155,13 +189,45 @@ function clickEasyMode(event) {
 		difficultySelect() ;
 	}
 
-	if(isInsideSquare(Coords["easyVertices"][0][0],Coords["easyVertices"][0][1],Coords["easyVertices"][0][2],Coords["easyVertices"][0][3],x,y))
+
+
+	var xPix = Coords["easyCoords"][0][2] ;
+	var yPix = Coords["easyCoords"][0][3] ;
+	console.log(Coords["easyCoords"][0][0],Coords["easyCoords"][0][1],xPix, yPix) ;
+	if(isInsideSquare(Coords["easyCoords"][0][0],Coords["easyCoords"][0][1],xPix, yPix,x,y))
 	{
 		Coords.isDragging = true 
 		Coords.dragCoord= [[x,y]]
+		// console.log("a") ;
 		// console.log(Coords["easyVertices"][0][0], x)
 	}
 }
+
+
+function easyMode(x,y)
+{
+
+	currentLoad = "easyMode" ;
+    ctx.clearRect(0,0,canvas.width,canvas.height)
+	insertRect(0,0,canvas.width, canvas.height,"#87ECEC",0,0) ;
+	// drawGrid(15,15) ;
+	addTitle(500,20) ;
+	insertEllipse(100, 50 , 90,30, 0, 0, 2*Math.PI, true, "#64EC42", "Difficulty Select", false,0,7,"20", "black" ) ;
+
+	// var pixX =  Coords["easyVertices"][0][0][0] - Coords["easyVertices"][0][2][0] ;
+	// var pixY =  Coords["easyVertices"][0][0][1] - Coords["easyVertices"][0][2][1] ;
+	
+	console.log(Coords["easyCoords"][0][2], Coords["easyCoords"][0][3]) ;
+	if(x == null)
+	{
+		x = 0 ;
+		y = 0 ;
+	}
+	// console.log(x,y) ;
+	insertRect(Coords["easyCoords"][0][0]+x,Coords["easyCoords"][0][1]-y, Coords["easyCoords"][0][2],Coords["easyCoords"][0][3], "black", 0, 0 );
+
+}
+
 function mainMenu() {
 
 	//Paint background 
@@ -212,23 +278,6 @@ function difficultySelect() {
 	insertEllipse(100, 50 , 75,30, 0, 0, 2*Math.PI, true, "#64EC42", "Main Menu", false,0,7,"20", "black" ) ;		
 }
 
-function easyMode()
-{
-
-	currentLoad = "easyMode" ;
-    ctx.clearRect(0,0,canvas.width,canvas.height)
-	insertRect(0,0,canvas.width, canvas.height,"#87ECEC",0,0) ;
-	// drawGrid(15,15) ;
-	addTitle(500,20) ;
-	insertEllipse(100, 50 , 90,30, 0, 0, 2*Math.PI, true, "#64EC42", "Difficulty Select", false,0,7,"20", "black" ) ;
-
-	var pixX =  Coords["easyCoords"][0][0] - Coords["easyVertices"][0][2][0] ;
-	var pixY =  Coords["easyCoords"][0][1] - Coords["easyVertices"][0][2][1] ;
-
-	insertRect(Coords["easyCoords"][0][0],Coords["easyCoords"][0][1], Math.abs(pixX), Math.abs(pixY), "black", 0, 0 );
-
-
-}
 
 function insertEllipse(x, y, radiusx,radiusy, rotation, start, end, counter, color, text, stroke,textX, textY,font, fontColor )
 {
@@ -375,30 +424,10 @@ function isInsideEllipse(a,b, x,y, h,k)
 	else
 		return false; 
 }
-function isInsideSquare(a,b,c,d,x ,y)
+function isInsideSquare(x,y,pixx,pixy,mx ,my)
 {
-	var minX = a[0], maxX = a[0] ;
-	var minY= a[1], maxY =a[1];
 
-	valuesX = [a[0],b[0],c[0],d[0]] ;
-	valuesY = [a[1],b[1],c[1],d[1]] ;
-
-	for(i =0  ; i < valuesX.length ; i++)
-	{
-		if(minX > valuesX[i])
-			minX = valuesX[i] ;
-		
-		if(maxX < valuesX[i])
-			maxX = valuesX[i] ;
-		
-		if(minY > valuesY[i])
-			minY = valuesY[i] ;
-
-		if(maxY < valuesY[i])
-			maxY = valuesY[i] ;
-	}
-
-	if(x <= maxX && x >= minX && y <= maxY && y >= minY)
+	if(mx <= pixx+x && mx >= x && my <= pixy+y && my >= y)
 		return true ;
 	else 
 		return false ;
