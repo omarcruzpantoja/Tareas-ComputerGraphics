@@ -5,9 +5,13 @@ var currentLoad ;
 var Coords = {
 	"play" : [],
 
-	"easyCoords" : [[200,200,200,200]]  ,
+	"Coords" : { "s": [], "t":[], "d" : [], "ts" : [] }  ,
 	isDragging: false
 }
+
+var selected ;
+
+var objects = []
 
 function initListeners()
 {
@@ -27,6 +31,7 @@ function init() {
 	// difficultySelect() ;
 	// currentLoad = "difficultySelect" ;
 
+	resetFigures() ;
 	currentLoad = "easyMode";
 	easyMode() ;
 
@@ -86,11 +91,11 @@ function mouseUp(event)
 			y = event.clientY - canvasPos.top ;
 			x = x - Coords.dragCoord[0][0] ; 
 			y = Coords.dragCoord[0][1] - y  ;
-			console.log(x,y);
+			// console.log(x,y);
 			// Coords["easyCoords"][0][0] = x - Coords["easyCoords"][0][0]  ;
 			// Coords["easyCoords"][0][1] =10 ;
-			Coords["easyCoords"][0][0] = Coords["easyCoords"][0][0]+x
-			Coords["easyCoords"][0][1] = Coords["easyCoords"][0][1]-y
+			// Coords["easyCoords"][0][0] = Coords["easyCoords"][0][0]+x
+			// Coords["easyCoords"][0][1] = Coords["easyCoords"][0][1]-y
 			easyMode() ;
 		}
 	}
@@ -177,63 +182,19 @@ function mouseMove(event) {
 	}	
 
 }
-function clickEasyMode(event) {
-
-	canvasPos = canvas.getBoundingClientRect() ;
-	x = event.clientX - canvasPos.left ;
-	y = event.clientY - canvasPos.top ;
-
-	//Click dificult select
-	if(isInsideEllipse(90,30, x, y,100, 50 ))
-	{
-		difficultySelect() ;
-	}
 
 
 
-	var xPix = Coords["easyCoords"][0][2] ;
-	var yPix = Coords["easyCoords"][0][3] ;
-	console.log(Coords["easyCoords"][0][0],Coords["easyCoords"][0][1],xPix, yPix) ;
-	if(isInsideSquare(Coords["easyCoords"][0][0],Coords["easyCoords"][0][1],xPix, yPix,x,y))
-	{
-		Coords.isDragging = true 
-		Coords.dragCoord= [[x,y]]
-		// console.log("a") ;
-		// console.log(Coords["easyVertices"][0][0], x)
-	}
-}
-
-
-function easyMode(x,y)
-{
-
-	currentLoad = "easyMode" ;
-    ctx.clearRect(0,0,canvas.width,canvas.height)
-	insertRect(0,0,canvas.width, canvas.height,"#87ECEC",0,0) ;
-	// drawGrid(15,15) ;
-	addTitle(500,20) ;
-	insertEllipse(100, 50 , 90,30, 0, 0, 2*Math.PI, true, "#64EC42", "Difficulty Select", false,0,7,"20", "black" ) ;
-
-	// var pixX =  Coords["easyVertices"][0][0][0] - Coords["easyVertices"][0][2][0] ;
-	// var pixY =  Coords["easyVertices"][0][0][1] - Coords["easyVertices"][0][2][1] ;
-	
-	console.log(Coords["easyCoords"][0][2], Coords["easyCoords"][0][3]) ;
-	if(x == null)
-	{
-		x = 0 ;
-		y = 0 ;
-	}
-	// console.log(x,y) ;
-	insertRect(Coords["easyCoords"][0][0]+x,Coords["easyCoords"][0][1]-y, Coords["easyCoords"][0][2],Coords["easyCoords"][0][3], "black", 0, 0 );
-
-}
 
 function mainMenu() {
 
 	//Paint background 
 	currentLoad = "mainMenu" ;
     ctx.clearRect(0,0,canvas.width,canvas.height)
-	insertRect(0,0,canvas.width, canvas.height,"#87ECEC",0,0) ;
+    ctx.setTransform(1,0, 0,1,0,0) ;
+	insertRect(0,0,canvas.width, canvas.height,"#87ECEC",0,0,0) ;
+
+	// function insertRect(x,y,pixelsX,pixelsY, color, skewX, skewY,  rotate)
 	drawGrid(15,15) ;
 	//Insert title (Build-A-Block) 
 	addTitle(350,50) ;
@@ -256,9 +217,10 @@ function mainMenu() {
 }
 
 function difficultySelect() {
-
+	console.log("qe carajo pasa") ;
 	currentLoad = "difficultySelect" ;
     ctx.clearRect(0,0,canvas.width,canvas.height)
+	ctx.setTransform(1,0, 0,1,0,0) ;
 	insertRect(0,0,canvas.width, canvas.height,"#87ECEC",0,0) ;
 	drawGrid(15,15) ;
 
@@ -303,70 +265,6 @@ function insertEllipse(x, y, radiusx,radiusy, rotation, start, end, counter, col
 
 }
 
-function insertTriangle(vA, vB, vC, color) {
-
-	ctx.fillStyle = color ;
-	ctx.beginPath() ;
-	ctx.moveTo(vA[0], vA[1]) ;
-	ctx.lineTo(vB[0], vB[1]) ;
-	ctx.lineTo(vC[0], vC[1]) ;
-	ctx.closePath() ;
-	ctx.stroke() ;
-	ctx.fill() ;
-
-}
-
-function insertRect(x,y,pixelsX,pixelsY, color, rotateX, rotateY)
-{
-
-	ctx.setTransform(1,rotateX, rotateY, 1,x,y)
-	ctx.fillStyle  = color ;
-	ctx.fillRect(0,0,pixelsX,pixelsY) ;
-
-	ctx.closePath() ;
-	ctx.setTransform(1, 0, 0, 1, 0, 0);
-
-}
-
-function insertPentagon(vA,vB,vC,vD,vF, x,y, color)
-{
-	ctx.setTransform(1,0,0,1,x,y) ;
-	ctx.fillStyle = color ;
-	ctx.beginPath() ;
-	ctx.moveTo(vA[0], vA[1]) ;
-	ctx.lineTo(vB[0], vB[1]) ;
-	ctx.lineTo(vC[0], vC[1]) ;
-	ctx.lineTo(vD[0], vD[1]) ;
-	ctx.lineTo(vF[0], vF[1]) ;
-	ctx.closePath() ;
-	ctx.fill() ;
-
-	ctx.setTransform(1,0,0,1,0,0) ;
-} 
-function addTitle(x,y) {
-	ctx.fillStyle = "blue";
-	ctx.fillRect(x,y, 200, 150) ;
-	ctx.fillStyle = "#390000";
-	ctx.textAlign = "left" ;
-	ctx.font = "90px arial";
-	ctx.fillText("Build", x ,y+110) ; 
-
-	ctx.fillStyle = "green";
-	ctx.fillRect(x+200,y, 100, 150) ;
-	ctx.fillStyle = "#390000";
-	// ctx.textAlign = "center" ;
-	ctx.font = "90px arial";
-	ctx.fillText("-A", x+200 ,y+110) ; 
-
-	ctx.fillStyle = "red";
-	ctx.fillRect(x,y+150, 300, 150) ;
-	ctx.fillStyle = "#390000";
-	// ctx.textAlign = "center" ;
-	ctx.font = "90px arial";
-	ctx.fillText("-Block", x+20 ,y+250) ; 
-
-
-}
 
 // 145A02
 
@@ -424,14 +322,16 @@ function isInsideEllipse(a,b, x,y, h,k)
 	else
 		return false; 
 }
-function isInsideSquare(x,y,pixx,pixy,mx ,my)
+function isInsideSquare(x,y,pixx,pixy,mousex ,mousey)
 {
 
-	if(mx <= pixx+x && mx >= x && my <= pixy+y && my >= y)
+	if(mousex <= pixx+x && mousex >= x && mousey <= pixy+y && mousey >= y)
 		return true ;
 	else 
 		return false ;
 }
+
+
 
 function getInfoSelector(x,y, hard)
 {
@@ -455,5 +355,291 @@ function getInfoSelector(x,y, hard)
 		ctx.closePath() ;
 		ctx.strokeStyle = "green" ;
 		ctx.stroke() ;
+	}
+}
+
+
+
+function Triangle(vA, vB, vC, posX,posY, color, rot) 
+{
+	rads = rot/180*Math.PI ;
+	x = vA[0] ;
+	y = vA[1] ;
+	vA[0] = x*Math.cos(rads)-y*Math.sin(rads) ;
+	vA[1] = x * Math.sin(rads)+ y*Math.cos(rads) ;
+	
+	x = vB[0] ;
+	y = vB[1] ;
+	vB[0] = x*Math.cos(rads)-y*Math.sin(rads) ;
+	vB[1] = x * Math.sin(rads)+ y*Math.cos(rads) ;
+	
+	x = vC[0] ;
+	y = vC[1] ; 
+	vC[0] = x*Math.cos(rads)-y*Math.sin(rads) ;
+	vC[1] = x * Math.sin(rads)+ y*Math.cos(rads) ;
+
+	this.vA = vA ;
+	this.vB = vB ;
+	this.vC = vC ;
+	this.posX = posX ;
+	this.posY = posY ;
+	this.rot = rads ;
+	this.type = "triangle" ;
+	this.color = color ;
+
+	this.ogA = vA ;
+	this.ogB = vB ;
+	this.ogC = vC ;
+	// this.vA = function() { return }	
+	this.getVertexPos = function(v,x,y) { return [v[0]+x, v[1]+y]} ;
+	this.setRot = function(add) 
+	{ 
+		// console.log(this.rot*180/Math.PI%360) ;
+		this.rot = (this.rot+add*Math.PI/180)%360 ;
+		console.log(this.rot*180/Math.PI%360) ;
+		rads = this.rot ;
+		x = this.ogA[0] ;
+		y = this.ogA[1] ;
+		this.vA[0] = x*Math.cos(rads)-y*Math.sin(rads) ;
+		this.vA[1] = x * Math.sin(rads)+ y*Math.cos(rads) ;
+		
+		x = this.ogB[0] ;
+		y = this.ogB[1] ;
+		this.vB[0] = x*Math.cos(rads)-y*Math.sin(rads) ;
+		this.vB[1] = x * Math.sin(rads)+ y*Math.cos(rads) ;
+		
+		x = this.ogC[0] ;
+		y = this.ogC[1] ; 
+		this.vC[0] = x*Math.cos(rads)-y*Math.sin(rads) ;
+		this.vC[1] = x * Math.sin(rads)+ y*Math.cos(rads) ;
+
+
+	}
+}
+
+function Rectangle(posX, posY, pixX, pixY, color, rot, skewX, skewY )
+{
+	this.posX = posX ;
+	this.posY = posY ;
+	this.pixX = pixX ;
+	this.pixY = pixY ;
+	this.color = color ;
+	this.rot = rot ;
+	this.type = "rectangle" ;
+	this.skewX = skewX ;
+	this.skewY = skewY ;
+}
+
+function drawGeo(geo) {
+
+	if(geo.type == "rectangle") 
+		insertRect(geo.posX,geo.posY, geo.pixX, geo.pixY, geo.color, geo.skewX, geo.skewY, geo.rot) ;
+
+	else if(geo.type == "triangle") 
+		insertTriangle(geo.vA, geo.vB, geo.vC, geo.color, geo.posX, geo.posY)  ;
+
+
+
+
+}
+
+
+function insertTriangle(vA, vB, vC, color, x,y) {
+
+
+	ctx.fillStyle = color ;
+	ctx.setTransform(1,0, 0,1,x,y)
+	ctx.beginPath() ;
+	ctx.moveTo(vA[0], vA[1]) ;
+	ctx.lineTo(vB[0], vB[1]) ;
+	ctx.lineTo(vC[0], vC[1]) ;
+
+	ctx.closePath() ;
+	ctx.stroke() ;
+	ctx.fill() ;
+
+}
+
+function insertRect(x,y,pixelsX,pixelsY, color, skewX, skewY,  rotate)
+{
+
+	if(color == undefined )
+	{
+		color = "black";
+		skewX = 0 ;
+		skewY = 0 ;
+		rotate = 0;
+	}
+	ctx.save() ;
+	ctx.fillStyle  = color ;
+	ctx.setTransform(1,skewX, skewY, 1,x,y)
+	ctx.rotate(rotate/180*Math.PI)
+	ctx.fillRect(0,0,pixelsX,pixelsY) ;
+	// ctx.closePath() ;
+	// ctx.setTransform(1, 0, 0, 1, 0, 0);
+	ctx.restore() ;
+
+
+}
+
+function insertPentagon(vA,vB,vC,vD,vF, x,y, color)
+{
+	ctx.setTransform(1,0,0,1,x,y) ;
+	ctx.fillStyle = color ;
+	ctx.beginPath() ;
+	ctx.moveTo(vA[0], vA[1]) ;
+	ctx.lineTo(vB[0], vB[1]) ;
+	ctx.lineTo(vC[0], vC[1]) ;
+	ctx.lineTo(vD[0], vD[1]) ;
+	ctx.lineTo(vF[0], vF[1]) ;
+	ctx.closePath() ;
+	ctx.fill() ;
+
+	ctx.setTransform(1,0,0,1,0,0) ;
+} 
+function addTitle(x,y) {
+	ctx.fillStyle = "blue";
+	ctx.fillRect(x,y, 200, 150) ;
+	ctx.fillStyle = "#390000";
+	ctx.textAlign = "left" ;
+	ctx.font = "90px arial";
+	ctx.fillText("Build", x ,y+110) ; 
+
+	ctx.fillStyle = "green";
+	ctx.fillRect(x+200,y, 100, 150) ;
+	ctx.fillStyle = "#390000";
+	// ctx.textAlign = "center" ;
+	ctx.font = "90px arial";
+	ctx.fillText("-A", x+200 ,y+110) ; 
+
+	ctx.fillStyle = "red";
+	ctx.fillRect(x,y+150, 300, 150) ;
+	ctx.fillStyle = "#390000";
+	// ctx.textAlign = "center" ;
+	ctx.font = "90px arial";
+	ctx.fillText("-Block", x+20 ,y+250) ; 
+
+
+}
+
+function clickEasyMode(event) {
+
+	canvasPos = canvas.getBoundingClientRect() ;
+	x = event.clientX - canvasPos.left ;
+	y = event.clientY - canvasPos.top ;
+
+	//Click dificult select
+	if(isInsideEllipse(90,30, x, y,100, 50 ))
+	{
+		difficultySelect() ;
+	}
+
+	else if(isInsideSquare(300,200,50,50,x,y) && selected != undefined)
+	{
+		objects[selected].setRot(90) ;
+		console.log(objects[selected].vB,objects[selected].vC) ;
+	}
+
+	for(let i  = 0; i < objects.length;i++)
+	{
+		let object = objects[i] ;
+	//Check if any piece has been clicked 
+	if(isInsideTriangle(object.getVertexPos(object.vA, object.posX,object.posY),
+						object.getVertexPos(object.vB, object.posX,object.posY),
+						object.getVertexPos(object.vC, object.posX,object.posY) ,x,y))
+		{
+		selected = i ;
+		break ;
+		}
+	}
+
+
+	easyMode() ;
+	// var xPix = Coords["easyCoords"][0][2] ;
+	// var yPix = Coords["easyCoords"][0][3] ;
+	// console.log(Coords["easyCoords"][0][0],Coords["easyCoords"][0][1],xPix, yPix) ;
+	// if(isInsideSquare(Coords["easyCoords"][0][0],Coords["easyCoords"][0][1],xPix, yPix,x,y))
+	// {
+	// 	Coords.isDragging = true 
+	// 	Coords.dragCoord= [[x,y]]
+	// 	// console.log("a") ;
+	// 	// console.log(Coords["easyVertices"][0][0], x)
+	// }
+}
+
+function isInsideTriangle(vA, vB, vC, x, y)
+{
+
+	p1 = isInsideTriangleAux(vA,vB,x,y) ;
+	p2 = isInsideTriangleAux(vB,vC,x,y) ;
+	p3 = isInsideTriangleAux(vC,vA,x,y) ;
+
+	return (p1 == p2 ) && (p2 == p3)
+}
+function isInsideTriangleAux(vA,vB,x,y)
+{
+	// console.log(vA, vB,x,y)
+	magic = ((vB[0] - vA[0])*(y-vA[1]) - (x - vA[0])*(vB[1] -vA[1]) )
+	if(magic > 0 )
+		return 1 ;
+	else if(magic < 0 )
+		return -1 ;
+	else
+		return 0 ;
+}
+
+function resetFigures() {
+
+	var sideA = 80 ;
+	var sideB = 100 ;
+
+ 	// objects.push(new Triangle([520,350], [520+sideA, 350], [520, 350 + sideA], "black" , 0)) ;
+ 	objects.push(new Triangle([0,0], [sideA,sideA],[0,sideA],520,480, "black", 0)) ;
+ 	// objects.push(new Triangle([770,460], [770, 460 + sideB],[770-sideB,460+sideB], "black" , 0)) ;
+ 	objects.push(new Triangle([0,0],[0,sideB], [-sideB,sideB], 770,460, "black",0 )) ;
+ 	// objects.push(new Triangle([540,460], [540 + 2*sideB,460], [540+sideB,460+sideB ], "black", 0)) ;
+ 	// objects.push(new Triangle([640,350], [640+sideB, 350+sideB], [640-sideB,350+sideB] ),"black", 0) ;
+
+ 	// objects.push(new Rectangle(590,580,sideA,sideA,"black", 45, 0,0)) ;
+ 	// objects.push(new Rectangle(680, 600, sideA, sideA, "black", 0,0,-.5))
+
+
+
+}
+
+
+
+function easyMode(x,y)
+{
+
+	currentLoad = "easyMode" ;
+    ctx.clearRect(0,0,canvas.width,canvas.height)
+    ctx.setTransform(1,0,0,1,0,0) ; 
+	insertRect(0,0,canvas.width, canvas.height,"#87ECEC",0,0) ;
+	// drawGrid(15,15) ;
+	addTitle(480,10) ;
+	insertEllipse(100, 50 , 90,30, 0, 0, 2*Math.PI, true, "#64EC42", "Difficulty Select", false,0,7,"20", "black" ) ;
+
+	insertRect(300,200, 50,50);
+	setFigures() ;
+	// var pixX =  Coords["easyVertices"][0][0][0] - Coords["easyVertices"][0][2][0] ;
+	// var pixY =  Coords["easyVertices"][0][0][1] - Coords["easyVertices"][0][2][1] ;
+	
+	// console.log(Coords["easyCoords"][0][2], Coords["easyCoords"][0][3]) ;
+	if(x == null)
+	{
+		x = 0 ;
+		y = 0 ;
+	}
+	// console.log(x,y) ;
+	// insertRect(Coords["easyCoords"][0][0]+x,Coords["easyCoords"][0][1]-y, Coords["easyCoords"][0][2],Coords["easyCoords"][0][3], "black", 0, 0 );
+
+}
+
+function setFigures() {
+
+	for(let i =0; i < objects.length; i++)
+	{
+		drawGeo(objects[i]) ;
 	}
 }
