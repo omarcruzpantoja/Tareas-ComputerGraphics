@@ -222,6 +222,7 @@ function insertPentagon(vA,vB,vC,vD,vF, x,y, color)
 //Insert ellispe with x,y coords 
 function insertEllipse(x, y, radiusx,radiusy, rotation, start, end, counter, color, text, stroke,textX, textY,font, fontColor )
 {
+	ctx.setTransform(1,0,0,1,0,0) ;
 	//Set color of ellipse 
 	ctx.fillStyle = color;
 	//Sketch the ellipse 
@@ -372,7 +373,7 @@ function mainMenu() {
 	insertPentagon([100,200],[200,200],[250,100],[150,0],[50,100], 525,425,"black") ;
 	//Insert Play ellipse
 	insertEllipse(canvas.width/2, canvas.height/2 +30 , 150,75, 0, 0, 2*Math.PI, true, "#64EC42", "PLAY", false,0,20, "40" ) ;
-	
+	console.log("putazo\n") ;
 	//Insert instructions ellipse
 	insertEllipse(canvas.width/2, canvas.height/4*3+30 , 150,75, 0, 0, 2*Math.PI, true, "#64EC42", "Instructions", false,0,10, "40" ) ;
 	

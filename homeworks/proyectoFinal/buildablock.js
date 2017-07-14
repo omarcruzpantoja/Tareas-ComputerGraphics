@@ -33,7 +33,7 @@ function init() {
 	// difficultySelect() ;
 	// currentLoad = "difficultySelect" ;
 
-	addFigures() ;
+	// addFigures() ;
 	currentLoad = "easyMode";
 	easyMode() ;
 
@@ -55,12 +55,12 @@ function mouseDown(event)
 	}
 	else if(currentLoad == "difficultySelect") 
 	{
+
 		clickDifficulty(event) ;
 
 	}
 	else if(currentLoad == "easyMode") 
 	{
-		// addFigures() ;
 		clickEasyMode(event) ;
 	}
 }
@@ -82,6 +82,7 @@ function clickDifficulty(event) {
 
 	if(isInsideEllipse(140,60,x,y,canvas.width/2-200, canvas.height/4+40))
 	{
+		addFigures() ; 	
 		easyMode() ;
 	}
 	else if(isInsideEllipse(140,60,x,y,canvas.width/2-200, canvas.height/4*2+40))
