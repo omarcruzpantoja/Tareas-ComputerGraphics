@@ -1,6 +1,6 @@
 //*** MAIN FIGURES ***//
 
-function Rectangle(posX, posY, pixX, pixY, color, rot, skewX, skewY )
+function Rectangle(posX, posY, pixX, pixY, color, rot, skewX, skewY, info )
 {
 
 	//Position X/Y relative to original coordinate frame (origin) 
@@ -22,9 +22,59 @@ function Rectangle(posX, posY, pixX, pixY, color, rot, skewX, skewY )
 	this.skewX = skewX ;
 	//Set skew y axis;
 	this.skewY = skewY ;
+	//Set rectangle info
+	this.info = info
+
+	this.vA = [0, 0] ;
+	this.vB = [pixX, 0+skewY*pixY]
+	this.vC = [pixX +pixX*skewX, pixY +pixY*skewY]
+	this.vD = [0+pixX*skewX, pixY] ;
+
+	this.ogB = this.vB.slice() ;
+	this.ogC = this.vC.slice() ;
+	this.ogD = this.vD.slice() ;
+
+	this.getVertexPos = function(v,x,y) { return [v[0]+x, v[1]+y]} ;
+
+	//Function to update rotation of triangle when applied
+	this.setRot = function(add) 
+	{ 
+		//Update rotation and convert to rads
+		//Use % to prevent overflows
+		this.rot = (this.rot+add*Math.PI/180)%360 ;
+		
+		//Update rotation element of the triangle
+		rads = this.rot ;
+
+		
+		//Update vertice's positions 
+		//First vector won't have to be modified since it is the origin point(0,0)
+		//therefor it won't have any update
+
+		//Vector 2 update
+		x = this.ogB[0] ;
+		y = this.ogB[1] ;
+		this.vB[0] = x*Math.cos(rads)-y*Math.sin(rads) ;
+		this.vB[1] = x * Math.sin(rads)+ y*Math.cos(rads) ;
+		
+		//Vector 3 update
+		x = this.ogC[0] ;
+		y = this.ogC[1] ; 
+		this.vC[0] = x*Math.cos(rads)-y*Math.sin(rads) ;
+		this.vC[1] = x * Math.sin(rads)+ y*Math.cos(rads) ;
+
+		//Vector 3 update
+		x = this.ogD[0] ;
+		y = this.ogD[1] ; 
+		this.vD[0] = x*Math.cos(rads)-y*Math.sin(rads) ;
+		this.vD[1] = x * Math.sin(rads)+ y*Math.cos(rads) ;
+
+
+	}
+
 }
 
-function Triangle(vA, vB, vC, posX,posY, color, rot) 
+function Triangle(vA, vB, vC, posX,posY, color, rot, info) 
 {
 	//Set degree to rads 
 	rads = rot/180*Math.PI ;
@@ -46,6 +96,8 @@ function Triangle(vA, vB, vC, posX,posY, color, rot)
 	this.type = "triangle" ;
 	//Set color of triangle
 	this.color = color ;
+	//Set triangle info
+	this.info = info
 
 	//Create copies of dimensions to be used when rotation is applied
 	this.ogB = vB.slice() ;
@@ -84,6 +136,7 @@ function Triangle(vA, vB, vC, posX,posY, color, rot)
 	}
 }
 
+
 //*** ***//
 
 //***CHECK IF A POINT IS INSIDE A FIGURE***//
@@ -117,7 +170,7 @@ function isInsideEllipse(a,b, x,y, h,k)
 }
 
 //Check if point is inside a square 
-function isInsideSquare(x,y,pixx,pixy,mousex ,mousey)
+function isInsideRectangle(x,y,pixx,pixy,mousex ,mousey)
 {
 	//Check if the point coords are inside the dimensions of the rectangle
 	if(mousex <= pixx+x && mousex >= x && mousey <= pixy+y && mousey >= y)
@@ -126,10 +179,26 @@ function isInsideSquare(x,y,pixx,pixy,mousex ,mousey)
 		return false ;
 }
 
+function isInsideRectangleV2(rect,x,y)
+{
+	
+	if(isInsideTriangle(rect.getVertexPos(rect.vA, rect.posX,rect.posY),
+							rect.getVertexPos(rect.vB, rect.posX,rect.posY),
+							rect.getVertexPos(rect.vC, rect.posX,rect.posY), x, y))
+		return true ;
+	else if(isInsideTriangle(rect.getVertexPos(rect.vA, rect.posX,rect.posY),
+			rect.getVertexPos(rect.vD, rect.posX,rect.posY),
+			rect.getVertexPos(rect.vC, rect.posX,rect.posY), x, y))
+		return true ;
+
+	return false;
+}
+
 //Check if point inside triangle 
 function isInsideTriangle(vA, vB, vC, x, y)
 {
 
+	// console.log(vA, vB, vC, x, y)
 	//Determine using barycentric coords (i don't exactly understand this, but works)
 	p1 = isInsideTriangleAux(vA,vB,x,y) ;
 	p2 = isInsideTriangleAux(vB,vC,x,y) ;
@@ -178,8 +247,25 @@ function insertRect(x,y,pixelsX,pixelsY, color, skewX, skewY,  rotate)
 
 }
 
+function insertRectV2(vA, vB, vC, vD, color, x ,y) {
+	//Set new coordinate frame with x y coords 
+	ctx.setTransform(1,0,0,1,x,y) ;
+	//Set pentagon color
+	ctx.fillStyle = color ;
+	//Skect the triangle with it's coords 
+	ctx.beginPath() ;
+	ctx.moveTo(vA[0], vA[1]) ;
+	ctx.lineTo(vB[0], vB[1]) ;
+	ctx.lineTo(vC[0], vC[1]) ;
+	ctx.lineTo(vD[0], vD[1]) ;
+	ctx.closePath() 
+
+	//Draw REctangle
+	ctx.fill()
+}
+
 //Insert rectangle in position x,y 
-function insertTriangle(vA, vB, vC, color, x,y) {
+function insertTriangle(vA, vB, vC, color, x,y,stroke) {
 
 	//Add color to triangle
 	ctx.fillStyle = color ;
@@ -192,8 +278,10 @@ function insertTriangle(vA, vB, vC, color, x,y) {
 	ctx.lineTo(vC[0], vC[1]) ;
 	ctx.closePath() ;
 
+	ctx.strokeStyle = "#000001"
 	//Draw the triangle 
-	ctx.stroke() ;
+	if(stroke == true)
+		ctx.stroke() ; 
 	ctx.fill() ;
 
 }
@@ -248,6 +336,11 @@ function insertEllipse(x, y, radiusx,radiusy, rotation, start, end, counter, col
 	}
 	ctx.closePath() ;
 
+}
+
+function insertTiltedRectangle(x,y,pixelsX,pixelsY, color, skew,  rotate)
+{
+	
 }
 //*** ***//
 
