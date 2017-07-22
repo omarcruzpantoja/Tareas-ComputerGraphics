@@ -483,14 +483,14 @@ function difficultySelect() {
 	addTitle(400,50) ;
 
 	//Easy selection 
-	insertEllipse(canvas.width/2-200, canvas.height/4 +40, 140,60, 0, 0, 2*Math.PI, true, "#64EC42", "Easy", false,0,20,"40" ) ;
+	insertEllipse(canvas.width/2-200, canvas.height/4 +40, 140,60, 0, 0, 2*Math.PI, true, "#64EC42", "1", false,0,20,"40" ) ;
 	// if(isInsideEllipse(140,60, ))
 	
 	//Medium selection
-	// insertEllipse(canvas.width/2-200, canvas.height/4*2+40, 140,60, 0, 0, 2*Math.PI, true, "#64EC42", "Medium", false,0,20,"40" ) ;
+	insertEllipse(canvas.width/2-200, canvas.height/4*2+40, 140,60, 0, 0, 2*Math.PI, true, "#64EC42", "2", false,0,20,"40" ) ;
 	
 	//Hard selection 
-	// insertEllipse(canvas.width/2-200, canvas.height/4*3+40 , 140,60, 0, 0, 2*Math.PI, true, "#64EC42", "Hard", false,0,20,"40" ) ;
+	insertEllipse(canvas.width/2-200, canvas.height/4*3+40 , 140,60, 0, 0, 2*Math.PI, true, "#64EC42", "3", false,0,20,"40" ) ;
 			
 	//GO back to main manu
 	insertEllipse(100, 50 , 75,30, 0, 0, 2*Math.PI, true, "#64EC42", "Main Menu", false,0,7,"20", "black" ) ;		

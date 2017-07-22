@@ -3,7 +3,8 @@
 var canvas ;
 var ctx ;
 var currentLoad ;
-var sol ;
+var sol = 44367 ;
+var level ;
 var Coords = {
 	isDragging: false
 }
@@ -34,10 +35,10 @@ function init() {
 	// // difficultySelect() ;
 	// // currentLoad = "difficultySelect" ;
 
-	addFigures() ;
+	// addFigures() ;
 
-	// currentLoad = "easyMode";
-// easyMode() ;
+	// currentLoad = "Level";
+
 	var source = ["imgs/Levels/Level1.png", "imgs/extra/wood.jpg", "imgs/extra/rotate.jpg"] ;
 	
     for(i = 0; i <source.length;i++)
@@ -53,16 +54,14 @@ function init() {
         img[i].src = source[i];
     } 
 	
-	sol = 44367 ; 
 	
-
-
+	// window["lala"]() ;
 }
 
 function mouseDown(event)
 {
 
-	// console.log(event);
+	
 	if(currentLoad == "mainMenu")
 	{
 		clickMenu(event) ;
@@ -78,9 +77,9 @@ function mouseDown(event)
 		clickDifficulty(event) ;
 
 	}
-	else if(currentLoad == "easyMode") 
+	else if(currentLoad == "Level") 
 	{
-		clickEasyMode(event) ;
+		clickLevel(event) ;
 	}
 }
 
@@ -101,23 +100,30 @@ function clickDifficulty(event) {
 
 	if(isInsideEllipse(140,60,x,y,canvas.width/2-200, canvas.height/4+40))
 	{
-//		addFigures() ; 	
-		easyMode() ;
+		addFigures() ;
+		level = 1 ; 	
+		Level() ;
 	}
 	else if(isInsideEllipse(140,60,x,y,canvas.width/2-200, canvas.height/4*2+40))
 	{
-
+		addFigures() ;
+		level = 2;
+		Level() ;
 	}
 	else if(isInsideEllipse(140,60,x,y,canvas.width/2-200, canvas.height/4*3+40))
 	{
-
+		addFigures() ;
+		level = 3;
+		Level() ;
 	}	
 }
 
+
+	
 function mouseUp(event)
 {
-	// console.log(event);
-	if(currentLoad == "easyMode") 
+
+	if(currentLoad == "Level") 
 	{
 		if(Coords.isDragging)
 		{
@@ -150,20 +156,16 @@ function mouseUp(event)
 					objects[selected].posY = Math.floor(((objects[selected].posY-y)/10))*10 ;
 			}
 
-			easyMode() ;
-			console.log( event.clientX - canvasPos.left ,event.clientY - canvasPos.top ) ;
+			Level() ;
+			
 			console.log("\nSolution") ;
 			for(i =0 ; i < objects.length; i++)
 				console.log(objects[i].posX, objects[i].posY, objects[i].type, objects[i].rot*180/Math.PI, objects[i].info) ;
 
 				var data = ctx.getImageData(0,0,canvas.width, canvas.height) ;
 			var pix = data.data
-			// console.log(pix)
+			
 			counter =0 ;
-
-
-			// for( i = 395*canvas.width*4 + 331*4;i < 395*canvas.width*4 + 331*4+4; i++)
-				// console.log(pix[i]) 
 			for(i =0 ; i < pix.length ; i++)
 				if(pix[i] == 0 && pix[1+i] == 0&& pix[2+i]==0)
 					counter++ ;
@@ -204,10 +206,10 @@ function mouseMove(event) {
 		// }	
 	}
 
-	else if(currentLoad == "easyMode") 
+	else if(currentLoad == "Level") 
 	{
 		if(Coords.isDragging) ;
-			relocateFig(x,y) ;// console.log(Coords.isDragging)
+			relocateFig(x,y) ;//
 		
 	}	
 
@@ -215,8 +217,7 @@ function mouseMove(event) {
 
 function drawGeo(geo,stroke,x,y) {
 
-	// console.log(x,y) ;
-	// console.log(geo)
+
 	if(x == undefined)
 	{
 		x = 0 ; 
@@ -231,17 +232,17 @@ function drawGeo(geo,stroke,x,y) {
 
 }
 
-function clickEasyMode(event) {
+function clickLevel(event) {
 
 	canvasPos = canvas.getBoundingClientRect() ;
 	x = event.clientX - canvasPos.left ;
 	y = event.clientY - canvasPos.top ;
 
 	//Click dificult select
-	if(isInsideEllipse(90,30, x, y,100, 50 ))
+	if(isInsideEllipse(40,18, x, y,50, 30 ))
 	{
 		difficultySelect() ;
-//		objects = [] ;
+		objects = [] ;
 		return ;
 	}
 
@@ -279,11 +280,10 @@ function clickEasyMode(event) {
 			Coords.dragCoord = [[x,y]]
 			return ;
 		}
-		// console.log(object.type)
+		
 	}
 
-
-	easyMode() ;
+	Level() ;
 
 }
 
@@ -308,33 +308,7 @@ function addFigures() {
  	objects.push(new Rectangle(520,580,sideA,sideA,"yellow", 0, 0,0,1)) ;
  	objects.push(new Rectangle(690, 580, sideA, sideA, "blue", 0,-1,0,2)) ; 
 
- 	console.log(objects[5])
-
-
-}
-
-function easyMode(x,y)
-{
-	//Reset canvas, add background color 
-	currentLoad = "easyMode" ;
-    ctx.clearRect(0,0,canvas.width,canvas.height)
-    ctx.setTransform(1,0,0,1,0,0) ; 
-
-	ctx.drawImage(img[1],0,0, canvas.width, canvas.height) ;
-	// drawGrid(15,15) ;
-	// addTitle(480,10) ;
-	insertEllipse(100, 50 , 90,30, 0, 0, 2*Math.PI, true, "#64EC42", "Level Select", false,0,7,"20", "black" ) ;
-
-	insertRect(300,200, 50,50, "blue") ;
-
-	insertRect(100,200, 50,50, "green" );
-	// ctx.drawImage(img[2], 0,0,50,50)
-	var show = solution1();
-
-
-
-
-	setFigures(x,y) ;
+ 
 
 
 }
@@ -364,10 +338,35 @@ function relocateFig(x,y)
 
 		x = x - Coords.dragCoord[0][0] ; 
 		y = Coords.dragCoord[0][1] - y  ;
-		// console.log(x,y) ;
-		easyMode(x,y) ;
+		
+		Level(x,y) ;
 	}
 }
+
+
+function Level(x,y)
+{
+	//Reset canvas, add background color 
+	currentLoad = "Level" ;
+    ctx.clearRect(0,0,canvas.width,canvas.height)
+    ctx.setTransform(1,0,0,1,0,0) ; 
+
+	ctx.drawImage(img[1],0,0, canvas.width, canvas.height) ;
+	// drawGrid(15,15) ;
+	// addTitle(480,10) ;
+	insertEllipse(50, 30 , 40,18, 0, 0, 2*Math.PI, true, "#64EC42", "Level Select", false,0,5,"10", "black" ) ;
+
+	insertRect(300,200, 50,50, "blue") ;
+
+	insertRect(100,200, 50,50, "green" );
+	// ctx.drawImage(img[2], 0,0,50,50)
+	
+	window["solution"+level.toString()]() ; 
+
+	setFigures(x,y) ;
+
+}
+
 
 function solution1()
 {
@@ -394,5 +393,54 @@ function solution1()
  	
 }
 
+function solution2()
+{
+	var sideA = 80 ;
+	var sideB = 100 ;
+	var sol = []
 
-  
+	sol.push(new Triangle([0,0], [sideA,sideA],[0,sideA],250,760, "black", 0))
+	sol[0].setRot(270)
+	sol.push(new Triangle([0,0], [sideA,sideA],[0,sideA],480,670, "black", 0))
+	sol[1].setRot(180)
+	sol.push(new Triangle([0,0], [0, sideB],[-sideB,sideB],290,720, "black" , 0,2)) ;
+	sol[2].setRot(180) ;
+	sol.push(new Triangle([0,0], [sideB, sideB], [-sideB,sideB], 380, 430, "black", 0,3)) ;
+	sol[3].setRot(45) ;
+ 	sol.push(new Triangle([0,0], [sideB, sideB], [-sideB,sideB] ,290, 620,"black", 0,3) );
+	sol[4].setRot(-135)
+	sol.push(new Rectangle(320,300,sideA,sideA,"black", 0, 0,0,1)) ;
+	sol[5].setRot(45) ;
+ 	sol.push(new Rectangle(240, 430, sideA, sideA, "black", 0,-1,0,2)) ; 
+ 	sol[6].setRot(45)
+
+ 	for(i =0 ; i < sol.length; i++)
+ 		drawGeo(sol[i], true) 
+ 	
+}
+
+function solution3()
+{
+	var sideA = 80 ;
+	var sideB = 100 ;
+	var sol = []
+
+	sol.push(new Triangle([0,0], [sideA,sideA],[0,sideA],180,540, "black", 0))
+	sol[0].setRot(90)
+	sol.push(new Triangle([0,0], [sideA,sideA],[0,sideA],240,600, "black", 0))
+	sol[1].setRot(0)
+	sol.push(new Triangle([0,0], [0, sideB],[-sideB,sideB],260,400, "black" , 0,2)) ;
+	sol[2].setRot(180) ;
+	sol.push(new Triangle([0,0], [sideB, sideB], [-sideB,sideB], 280, 430, "black", 0,3)) ;
+	sol[3].setRot(315) ;
+ 	sol.push(new Triangle([0,0], [sideB, sideB], [-sideB,sideB] ,280, 500,"black", 0,3) );
+	sol[4].setRot(45)
+	sol.push(new Rectangle(340,320,sideA,sideA,"black", 0, 0,0,1)) ;
+	sol[5].setRot(45) ;
+ 	sol.push(new Rectangle(380, 470, sideA, sideA, "black", 0,-1,0,2)) ; 
+ 	sol[6].setRot(0)
+
+ 	for(i =0 ; i < sol.length; i++)
+ 		drawGeo(sol[i], true) 
+ 	
+}
