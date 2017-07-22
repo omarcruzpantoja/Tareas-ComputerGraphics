@@ -36,8 +36,8 @@ function init() {
 
 	addFigures() ;
 
-	currentLoad = "easyMode";
-
+	// currentLoad = "easyMode";
+// easyMode() ;
 	var source = ["imgs/Levels/Level1.png", "imgs/extra/wood.jpg", "imgs/extra/rotate.jpg"] ;
 	
     for(i = 0; i <source.length;i++)
@@ -54,7 +54,7 @@ function init() {
     } 
 	
 	sol = 44367 ; 
-	easyMode() ;
+	
 
 
 }
@@ -171,7 +171,7 @@ function mouseUp(event)
 			pct = counter/(sol) * 100 
 			if (pct< 2)
 				alert("lvl completed");  
-			console.log(pct)
+			console.log(pct )
 		}
 
 	}
