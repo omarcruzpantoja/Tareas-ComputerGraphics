@@ -1,45 +1,51 @@
+//Developed by: Omar Cruz Pantoja
+//First beta completed on: 25/Julio/2017
+//Computer Graphics-
 
-//Global variables that MUST be saved 
+//Global variables that MUST be protected 
+
+//Canvas variables
 var canvas ;
 var ctx ;
+
+//Screen loading variables 
 var currentLoad ;
-var sol = 44367 ;
 var level ;
+var sol = 43689 ;
+
+//Select figures/rotate and locate vertices
 var Coords = {
 	isDragging: false
 }
 var selected ;
 var objects = []
+
+//Images loaded into the game 
 var img = []
+
 
 function initListeners()
 {
+	//Mouse click down/select figure
 	canvas.addEventListener("mousedown", mouseDown, false) ;
+	//Event for when dragging a figure 
 	canvas.addEventListener("mousemove", mouseMove, false) ;
+	//Dragging completed, relocate figure 
 	canvas.addEventListener("mouseup", mouseUp, false) ;
-	// canvas.addEventListener("touchstart", test, false) ;
 } 
 
-// function test(event)
-// {
-// 	insertRect(200,200,200,300) ;
-// }
+
 function init() {
+
+	//Load canvas context
 	canvas = document.getElementById("canvas") 
 	ctx = canvas.getContext("2d") ;
 
+	//Add event listeners 
 	initListeners() ;
 
-	mainMenu() ;
-	currentLoad = "mainMenu";
-	// // difficultySelect() ;
-	// // currentLoad = "difficultySelect" ;
-
-	// addFigures() ;
-
-	// currentLoad = "Level";
-
-	var source = ["imgs/Levels/Level1.png", "imgs/extra/wood.jpg", "imgs/extra/rotate.jpg"] ;
+	//Load image to be displayed 
+	var source = ["imgs/Levels/Level1.png", "imgs/extra/wood.jpg", "imgs/extra/rotateCounter.png", "imgs/extra/rotateClock.png", "imgs/extra/back.png"] ;
 	
     for(i = 0; i <source.length;i++)
     {
@@ -48,68 +54,104 @@ function init() {
 
         } ;
     }
-
     for(i =0 ; i < source.length ; i++) 
     {
         img[i].src = source[i];
     } 
 	
-	
-	// window["lala"]() ;
+
+	//Start in main menu 
+	mainMenu() ;
+	currentLoad = "mainMenu";
+
+
 }
 
 function mouseDown(event)
 {
 
-	
+	//Mouse click on the mainMenu 
 	if(currentLoad == "mainMenu")
-	{
+		//Callback to check if the (x,y) pos of mouse clicked a button 
 		clickMenu(event) ;
 
-	}
-	else if(currentLoad == "Instructions")
-	{
+	//Mouse click on howtoplay screen
+	else if(currentLoad == "HowToPlay")
+	//Callback to check if the (x,y) pos of mouse clicked a button 
+		clickHowToPlay(event) ;
 
-	}
+	//Mouse click on level select screen 	
 	else if(currentLoad == "difficultySelect") 
-	{
-
+	//Callback to check if the (x,y) pos of mouse clicked a button 
 		clickDifficulty(event) ;
 
-	}
+	//Mouse click on game screen 
 	else if(currentLoad == "Level") 
-	{
+	//Callback to check if the (x,y) pos of mouse clicked a button 
 		clickLevel(event) ;
-	}
+	
 }
 
 function clickMenu(event){
+	//Get mouse position 
 	canvasPos = canvas.getBoundingClientRect() ;
 	x = event.clientX - canvasPos.left ;
 	y = event.clientY - canvasPos.top ;
+
+	//Check if click is inside difficulty select ellipse 
 	if(isInsideEllipse(150,75, x, y,canvas.width/2, canvas.height/2 +30 ))
 		difficultySelect() ;
+
+	//Check if click was inside howtoplay/tutorial ellipse 
+	else if(isInsideEllipse(150,75, x, y,canvas.width/2, canvas.height/4*3 +30 ))
+	{
+		howToPlay() ;
+		tickTutorial() ;
+	}
+		
+
 }
-function clickDifficulty(event) {
-	
+
+function clickHowToPlay(event) {
+	//Get mouse position 
 	canvasPos = canvas.getBoundingClientRect() ;
 	x = event.clientX - canvasPos.left ;
 	y = event.clientY - canvasPos.top ;
-	if(isInsideEllipse(75,30, x, y,100, 50 ))
+
+
+	//Check if click was in the goback button 
+	if(isInsideRectangle(15,15, 100, 60,x, y ))
+		mainMenu() ;
+}
+
+function clickDifficulty(event) {
+	
+	//Get mouse position 
+	canvasPos = canvas.getBoundingClientRect() ;
+	x = event.clientX - canvasPos.left ;
+	y = event.clientY - canvasPos.top ;
+
+	//Check if click was in the goback button 
+	if(isInsideRectangle(15,15, 100, 60,x, y ))
 		mainMenu() ;
 
+	//Check if click was inside level 1 ellipse 
 	if(isInsideEllipse(140,60,x,y,canvas.width/2-200, canvas.height/4+40))
 	{
 		addFigures() ;
 		level = 1 ; 	
 		Level() ;
 	}
+
+	//Check if click was inside level 2 ellipse 
 	else if(isInsideEllipse(140,60,x,y,canvas.width/2-200, canvas.height/4*2+40))
 	{
 		addFigures() ;
 		level = 2;
 		Level() ;
 	}
+
+	//Check if click was inside level 3 ellipse 
 	else if(isInsideEllipse(140,60,x,y,canvas.width/2-200, canvas.height/4*3+40))
 	{
 		addFigures() ;
@@ -119,6 +161,66 @@ function clickDifficulty(event) {
 }
 
 
+function clickLevel(event) {
+
+	//Get mouse coords relative to canvas
+	canvasPos = canvas.getBoundingClientRect() ;
+	x = event.clientX - canvasPos.left ;
+	y = event.clientY - canvasPos.top ;
+
+	//Click goback button 
+	if(isInsideRectangle(15,15, 100, 60,x, y ))
+	{
+		//Return to level select screen 
+		difficultySelect() ;
+		//Reset colores figures 
+		objects = [] ;
+		return ;
+	}
+
+	//If rotate counterclockwise button is pressed, rotate the seleceted figure(if any, else do nothing)
+	else if(isInsideRectangle(680,650,50,50,x,y) && selected != undefined)
+		objects[selected].setRot(45) ;
+		
+	
+	//If rotate counterclockwise button is pressed, rotate the seleceted figure(if any, else do nothing)
+	else if(isInsideRectangle(550,650,50,50,x,y) && selected != undefined)
+		objects[selected].setRot(-45) ;
+		
+
+	for(let i  = 0; i < objects.length;i++)
+	{
+		let object = objects[i] ;
+		//Check if any piece has been clicked (triangles) 
+		if(object.type == "triangle" && isInsideTriangle(object.getVertexPos(object.vA, object.posX,object.posY),
+							object.getVertexPos(object.vB, object.posX,object.posY),
+							object.getVertexPos(object.vC, object.posX,object.posY) ,x,y)) 
+		{
+			//Get the figure's ID
+			selected = i ;
+			Coords.isDragging = true ;
+			//Get mouse coords 
+			Coords.dragCoord= [[x,y]]
+			return ;
+		}
+	
+		//Check if any piece has eben clicked (rectangles)  
+		else if(object.type == "rectangle" && isInsideRectangleV2(object,x ,y))
+		{
+			//Get the figure's ID
+			selected = i ;
+			Coords.isDragging = true ;
+			//Get mouse coords 
+			Coords.dragCoord = [[x,y]]
+			return ;
+		}
+		
+	}
+
+	//Redraw the screen after all changes has been made 
+	Level() ;
+
+}
 	
 function mouseUp(event)
 {
@@ -127,24 +229,21 @@ function mouseUp(event)
 	{
 		if(Coords.isDragging)
 		{
+			//Dragging is completed 
+			Coords.isDragging = false;
 
-			Coords.isDragging = false; 
+			//Get mouse coords  
 			canvasPos = canvas.getBoundingClientRect() ;
 			x = event.clientX - canvasPos.left ;
 			y = event.clientY - canvasPos.top ;
+
 			x = x - Coords.dragCoord[0][0] ; 
 			y = Coords.dragCoord[0][1] - y  ;
 
 			//Grid idea for X
-			if(objects[selected].type == "rectangle"&&objects[selected].info == 1)
+			if(boundedBox(objects[selected].posX+x,objects[selected].posY-y))
 			{
-				objects[selected].posX = objects[selected].posX+x ;
-				objects[selected].posY = objects[selected].posY-y ;
-			}
-
-			else
-			{
-				if((objects[selected].posX+x)%10 > 5) 
+				if((objects[selected].posX+x)%10 > 5 ) 
 					objects[selected].posX = Math.ceil(((objects[selected].posX+x)/10))*10
 				else
 					objects[selected].posX= Math.floor(((objects[selected].posX+x)/10))*10
@@ -155,25 +254,39 @@ function mouseUp(event)
 				else
 					objects[selected].posY = Math.floor(((objects[selected].posY-y)/10))*10 ;
 			}
-
-			Level() ;
 			
-			console.log("\nSolution") ;
-			for(i =0 ; i < objects.length; i++)
-				console.log(objects[i].posX, objects[i].posY, objects[i].type, objects[i].rot*180/Math.PI, objects[i].info) ;
+			//Used to create solutions 
+			// console.log("\nSolution") ;
+			// for(i =0 ; i < objects.length; i++)
+				// console.log(objects[i].posX, objects[i].posY, objects[i].type, objects[i].rot*180/Math.PI, objects[i].info) ;
 
-				var data = ctx.getImageData(0,0,canvas.width, canvas.height) ;
+			//Get image's pixel information 
+			var data = ctx.getImageData(0,0,canvas.width, canvas.height) ;
 			var pix = data.data
 			
 			counter =0 ;
-			for(i =0 ; i < pix.length ; i++)
-				if(pix[i] == 0 && pix[1+i] == 0&& pix[2+i]==0)
+			//Must optimize the starting position
+			for(i =200*canvas.width*4 ; i< 725*canvas.width*4 ; i++)
+				if(pix[i] == 0 && pix[1+i] == 0&& pix[2+i]==3)
 					counter++ ;
-
+			//Check how much percent of black colors are still missing 
 			pct = counter/(sol) * 100 
+
+			//If less than 2 percent of pixels include the color black, the level has been completed 
 			if (pct< 2)
-				alert("lvl completed");  
-			console.log(pct )
+			{
+
+				//Go to next level, if level 3 has been completed, start on level 1 again. 
+				alert("Level", level, "completed");  
+				if(level ==3)
+					level =1 ;
+				else
+					level = level +1 ;
+				objects= [] ;
+				addFigures() ;
+			}
+			//Callback to draw level information 
+			Level() ;
 		}
 
 	}
@@ -181,144 +294,76 @@ function mouseUp(event)
 
 function mouseMove(event) {
 
+	//Get (x,y) coords of the mouse 
 	canvasPos = canvas.getBoundingClientRect() ;
 	x = event.clientX - canvasPos.left ;
 	y = event.clientY - canvasPos.top ;
+	// console.log(x,y)
 
-	if(currentLoad == "difficultySelect") 
+	//Check if a figure is being dragged, if it is, draw it on it's new coord 
+	if(currentLoad == "Level" && Coords.isDragging) 
 	{
-
-		// // var description = ["The easy challenges include the exact amount of pieces required to draw "]
-		// if(isInsideEllipse(140,60,x,y,canvas.width/2-200, canvas.height/4+40))
-		// {
-		// 	difficultySelect() ;
-		// 	getInfoSelector(canvas.width/2-200, canvas.height/4+40)
-		// }
-		// else if(isInsideEllipse(140,60,x,y,canvas.width/2-200, canvas.height/4*2+40))
-		// {
-		// 	difficultySelect() ;
-		// 	getInfoSelector(canvas.width/2-200, canvas.height/4*2+40) ;
-		// }
-		// else if(isInsideEllipse(140,60,x,y,canvas.width/2-200, canvas.height/4*3+40))
-		// {
-		// 	difficultySelect() ;
-		// 	getInfoSelector(canvas.width/2-200, canvas.height/4*3+40, true) ;
-		// }	
-	}
-
-	else if(currentLoad == "Level") 
-	{
-		if(Coords.isDragging) ;
-			relocateFig(x,y) ;//
-		
+		relocateFig(x,y) ;
 	}	
 
 }
 
+//Draw all the objects(colored figures) 
 function drawGeo(geo,stroke,x,y) {
 
-
+	//If no XY coords given, set them to 0 to avoid NaN
+	//X Y will be defined when dragging a figure  
 	if(x == undefined)
 	{
 		x = 0 ; 
 		y = 0 ;
 	}
-	if(geo.type == "rectangle") 
-		// insertRect(geo.posX,geo.posY, geo.pixX, geo.pixY, geo.color, geo.skewX, geo.skewY, geo.rot) ;
-		insertRectV2(geo.vA, geo.vB, geo.vC,geo.vD, geo.color, geo.posX+x, geo.posY-y)
 
+	//Draw geometry according to its type 
+	if(geo.type == "rectangle") 
+		insertRectV2(geo.start, geo.vA, geo.vB, geo.vC,geo.vD, geo.color, geo.posX+x, geo.posY-y)
 	else if(geo.type == "triangle") 
 		insertTriangle(geo.vA, geo.vB, geo.vC, geo.color, geo.posX+x, geo.posY-y,stroke)  ;
 
 }
 
-function clickLevel(event) {
-
-	canvasPos = canvas.getBoundingClientRect() ;
-	x = event.clientX - canvasPos.left ;
-	y = event.clientY - canvasPos.top ;
-
-	//Click dificult select
-	if(isInsideEllipse(40,18, x, y,50, 30 ))
-	{
-		difficultySelect() ;
-		objects = [] ;
-		return ;
-	}
-
-	else if(isInsideRectangle(300,200,50,50,x,y) && selected != undefined)
-	{
-		objects[selected].setRot(45) ;
-		
-	}
-		else if(isInsideRectangle(100,200,50,50,x,y) && selected != undefined)
-	{
-		objects[selected].setRot(-45) ;
-		
-	
-	}
-
-	for(let i  = 0; i < objects.length;i++)
-	{
-		let object = objects[i] ;
-	//Check if any piece has been clicked (triangles) 
-		if(object.type == "triangle" && isInsideTriangle(object.getVertexPos(object.vA, object.posX,object.posY),
-							object.getVertexPos(object.vB, object.posX,object.posY),
-							object.getVertexPos(object.vC, object.posX,object.posY) ,x,y)) 
-		{
-			selected = i ;
-			Coords.isDragging = true ;
-			Coords.dragCoord= [[x,y]]
-			return ;
-		}
-	
-
-		else if(object.type == "rectangle" && isInsideRectangleV2(object,x ,y))
-		{
-			selected = i ;
-			Coords.isDragging = true ;
-			Coords.dragCoord = [[x,y]]
-			return ;
-		}
-		
-	}
-
-	Level() ;
-
-}
 
 
-
+//Add colored figures to the game(can be used to reset the figures) 
 function addFigures() {
 
 	var sideA = 80 ;
 	var sideB = 100 ;
 
+	//These two are of same size (triangles) 
 	objects.push(new Triangle([0,0], [sideA,sideA],[0,sideA],600,350, "green", 0,1)) ;
 	objects[0].setRot(90) ;
  	objects.push(new Triangle([0,0], [sideA,sideA],[0,sideA],520,480, "green", 0,1)) ;
 
+ 	//This is of one size (triangles) 
  	objects.push(new Triangle([0,0], [0, sideB],[-sideB,sideB],770,460, "red" , 0,2)) ;
   
+  	//These two are of same size (triangles) 
  	objects.push(new Triangle([0,0], [sideB, sideB], [-sideB,sideB], 640, 560, "orange", 0,3)) ;
  	objects[3].setRot(180)
  	objects.push(new Triangle([0,0], [sideB, sideB], [-sideB,sideB] ,640, 350,"orange", 0,3) );
 
-
- 	objects.push(new Rectangle(520,580,sideA,sideA,"yellow", 0, 0,0,1)) ;
- 	objects.push(new Rectangle(690, 580, sideA, sideA, "blue", 0,-1,0,2)) ; 
-
- 
-
+ 	//These are of same size but different forms 
+ 	objects.push(new Rectangle(560,270,sideA,sideA,"#ffe302", 0, 0,0,1)) ;
+ 	//This one is a parallelogram 
+ 	objects.push(new Rectangle(750, 270, sideA, sideA, "#a902ad", 0,-1,0,2)) ; 
 
 }
 
+
+
+//Draw each colored piece 
 function setFigures(x,y) {
 
 	for(let i =0; i < objects.length; i++)
 	{
 		if( x == undefined )
-		{
+		{	
 			x = 0 ;
 			y = 0 ;
 		}
@@ -331,6 +376,7 @@ function setFigures(x,y) {
 		drawGeo(objects[selected],false, x,y) ;
 }
 
+//Draw figures (will be dragging)  
 function relocateFig(x,y) 
 {
 	if(Coords.isDragging)
@@ -338,36 +384,14 @@ function relocateFig(x,y)
 
 		x = x - Coords.dragCoord[0][0] ; 
 		y = Coords.dragCoord[0][1] - y  ;
-		
+		//The parameters sent here are used to draw the figure being dragged
 		Level(x,y) ;
 	}
 }
 
 
-function Level(x,y)
-{
-	//Reset canvas, add background color 
-	currentLoad = "Level" ;
-    ctx.clearRect(0,0,canvas.width,canvas.height)
-    ctx.setTransform(1,0,0,1,0,0) ; 
 
-	ctx.drawImage(img[1],0,0, canvas.width, canvas.height) ;
-	// drawGrid(15,15) ;
-	// addTitle(480,10) ;
-	insertEllipse(50, 30 , 40,18, 0, 0, 2*Math.PI, true, "#64EC42", "Level Select", false,0,5,"10", "black" ) ;
-
-	insertRect(300,200, 50,50, "blue") ;
-
-	insertRect(100,200, 50,50, "green" );
-	// ctx.drawImage(img[2], 0,0,50,50)
-	
-	window["solution"+level.toString()]() ; 
-
-	setFigures(x,y) ;
-
-}
-
-
+//Third level Silhuette 
 function solution1()
 {
 
@@ -375,17 +399,17 @@ function solution1()
 	var sideB = 100 ;
 	var sol = []
 
-	sol.push(new Triangle([0,0], [sideA,sideA],[0,sideA],150,600, "black", 0))
+	sol.push(new Triangle([0,0], [sideA,sideA],[0,sideA],190,510, "#000003", 0))
 	sol[0].setRot(90)
-	sol.push(new Triangle([0,0], [sideA,sideA],[0,sideA],330,620, "black", 0))
-	sol.push(new Triangle([0,0], [0, sideB],[-sideB,sideB],280,570, "black" , 0,2)) ;
+	sol.push(new Triangle([0,0], [sideA,sideA],[0,sideA],370,530, "#000003", 0))
+	sol.push(new Triangle([0,0], [0, sideB],[-sideB,sideB],320,480, "#000003" , 0,2)) ;
 	sol[2].setRot(270) ;
-	sol.push(new Triangle([0,0], [sideB, sideB], [-sideB,sideB], 340, 530, "black", 0,3)) ;
+	sol.push(new Triangle([0,0], [sideB, sideB], [-sideB,sideB], 380, 440, "#000003", 0,3)) ;
 	sol[3].setRot(180) ;
- 	sol.push(new Triangle([0,0], [sideB, sideB], [-sideB,sideB] ,280, 470,"black", 0,3) );
-	sol.push(new Rectangle(340,320,sideA,sideA,"black", 0, 0,0,1)) ;
+ 	sol.push(new Triangle([0,0], [sideB, sideB], [-sideB,sideB] ,320, 380,"#000003", 0,3) );
+	sol.push(new Rectangle(380,280,sideA,sideA,"#000003", 0, 0,0,1)) ;
 	sol[5].setRot(45) ;
- 	sol.push(new Rectangle(180, 570, sideA, sideA, "black", 0,-1,0,2)) ; 
+ 	sol.push(new Rectangle(260, 520, sideA, sideA, "#000003", 0,-1,0,2)) ; 
 
 
  	for(i =0 ; i < sol.length; i++)
@@ -393,54 +417,63 @@ function solution1()
  	
 }
 
+//Second level Silhuette 
 function solution2()
 {
 	var sideA = 80 ;
 	var sideB = 100 ;
 	var sol = []
 
-	sol.push(new Triangle([0,0], [sideA,sideA],[0,sideA],250,760, "black", 0))
+	sol.push(new Triangle([0,0], [sideA,sideA],[0,sideA],270,640, "#000003", 0))
 	sol[0].setRot(270)
-	sol.push(new Triangle([0,0], [sideA,sideA],[0,sideA],480,670, "black", 0))
+	sol.push(new Triangle([0,0], [sideA,sideA],[0,sideA],500,550, "#000003", 0))
 	sol[1].setRot(180)
-	sol.push(new Triangle([0,0], [0, sideB],[-sideB,sideB],290,720, "black" , 0,2)) ;
+	sol.push(new Triangle([0,0], [0, sideB],[-sideB,sideB],310,600, "#000003" , 0,2)) ;
 	sol[2].setRot(180) ;
-	sol.push(new Triangle([0,0], [sideB, sideB], [-sideB,sideB], 380, 430, "black", 0,3)) ;
+	sol.push(new Triangle([0,0], [sideB, sideB], [-sideB,sideB], 400, 310, "#000003", 0,3)) ;
 	sol[3].setRot(45) ;
- 	sol.push(new Triangle([0,0], [sideB, sideB], [-sideB,sideB] ,290, 620,"black", 0,3) );
+ 	sol.push(new Triangle([0,0], [sideB, sideB], [-sideB,sideB] ,310, 500,"#000003", 0,3) );
 	sol[4].setRot(-135)
-	sol.push(new Rectangle(320,300,sideA,sideA,"black", 0, 0,0,1)) ;
+	sol.push(new Rectangle(350,250,sideA,sideA,"#000003", 0, 0,0,1)) ;
 	sol[5].setRot(45) ;
- 	sol.push(new Rectangle(240, 430, sideA, sideA, "black", 0,-1,0,2)) ; 
+ 	sol.push(new Rectangle(262, 369, sideA, sideA, "#000003", 0,-1,0,2)) ; 
  	sol[6].setRot(45)
 
  	for(i =0 ; i < sol.length; i++)
  		drawGeo(sol[i], true) 
  	
 }
-
+//Third level Silhuette 
 function solution3()
 {
 	var sideA = 80 ;
 	var sideB = 100 ;
 	var sol = []
 
-	sol.push(new Triangle([0,0], [sideA,sideA],[0,sideA],180,540, "black", 0))
+	sol.push(new Triangle([0,0], [sideA,sideA],[0,sideA],220,480, "#000003", 0))
 	sol[0].setRot(90)
-	sol.push(new Triangle([0,0], [sideA,sideA],[0,sideA],240,600, "black", 0))
+	sol.push(new Triangle([0,0], [sideA,sideA],[0,sideA],280,540, "#000003", 0))
 	sol[1].setRot(0)
-	sol.push(new Triangle([0,0], [0, sideB],[-sideB,sideB],260,400, "black" , 0,2)) ;
+	sol.push(new Triangle([0,0], [0, sideB],[-sideB,sideB],300,340, "#000003" , 0,2)) ;
 	sol[2].setRot(180) ;
-	sol.push(new Triangle([0,0], [sideB, sideB], [-sideB,sideB], 280, 430, "black", 0,3)) ;
+	sol.push(new Triangle([0,0], [sideB, sideB], [-sideB,sideB], 320, 370, "#000003", 0,3)) ;
 	sol[3].setRot(315) ;
- 	sol.push(new Triangle([0,0], [sideB, sideB], [-sideB,sideB] ,280, 500,"black", 0,3) );
+ 	sol.push(new Triangle([0,0], [sideB, sideB], [-sideB,sideB] ,320, 440,"#000003", 0,3) );
 	sol[4].setRot(45)
-	sol.push(new Rectangle(340,320,sideA,sideA,"black", 0, 0,0,1)) ;
+	sol.push(new Rectangle(380,310,sideA,sideA,"#000003", 0, 0,0,1)) ;
 	sol[5].setRot(45) ;
- 	sol.push(new Rectangle(380, 470, sideA, sideA, "black", 0,-1,0,2)) ; 
+ 	sol.push(new Rectangle(480, 430, sideA, sideA, "#000003", 0,-1,0,2)) ; 
  	sol[6].setRot(0)
 
  	for(i =0 ; i < sol.length; i++)
  		drawGeo(sol[i], true) 
  	
 }
+
+//Make sure the user stays within the canvas limits and  no figure is lost 
+function boundedBox(x,y)
+{
+	return x > 70 && x < 750 && y > 65 && y < 710 ;
+}
+
+

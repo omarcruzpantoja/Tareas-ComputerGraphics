@@ -1,3 +1,15 @@
+//Developed by: Omar Cruz Pantoja
+//First beta completed on: 25/Julio/2017
+//Computer Graphics-4995
+
+//Global variable used in howtoplay animation
+//Must fix globals and enclose them in functions for safety 	
+tutorialCoords = {
+"a": [620,400,150,150 , "#0f93e2"] , 
+"b" : [500,400,100,150,"#00be01"] ,
+"c" : [500,600,250,150,"red"]  
+}
+
 //*** MAIN FIGURES ***//
 
 function Rectangle(posX, posY, pixX, pixY, color, rot, skewX, skewY, info )
@@ -25,11 +37,12 @@ function Rectangle(posX, posY, pixX, pixY, color, rot, skewX, skewY, info )
 	//Set rectangle info
 	this.info = info
 
-	this.vA = [0, 0] ;
-	this.vB = [pixX, 0+skewY*pixY]
-	this.vC = [pixX +pixX*skewX, pixY +pixY*skewY]
-	this.vD = [0+pixX*skewX, pixY] ;
-
+	this.vA = [-pixX/2, -pixY/2] ;
+	this.vB = [pixX/2, -pixY/2+skewY*pixY]
+	this.vC = [pixX/2 +pixX*skewX, pixY/2 +pixY*skewY]
+	this.vD = [-pixX/2+pixX*skewX, pixY/2] ;
+	// console.log(this.vA, this.vB, this.vC, this.vD, this.skewX)
+	this.ogA = this.vA.slice() ;
 	this.ogB = this.vB.slice() ;
 	this.ogC = this.vC.slice() ;
 	this.ogD = this.vD.slice() ;
@@ -48,8 +61,10 @@ function Rectangle(posX, posY, pixX, pixY, color, rot, skewX, skewY, info )
 
 		
 		//Update vertice's positions 
-		//First vector won't have to be modified since it is the origin point(0,0)
-		//therefor it won't have any update
+		x = this.ogA[0] ;
+		y = this.ogA[1] ;
+		this.vA[0] = x*Math.cos(rads)-y*Math.sin(rads) ;
+		this.vA[1] = x * Math.sin(rads)+ y*Math.cos(rads) ;
 
 		//Vector 2 update
 		x = this.ogB[0] ;
@@ -179,13 +194,16 @@ function isInsideRectangle(x,y,pixx,pixy,mousex ,mousey)
 		return false ;
 }
 
+
+//Function to check if the point (x,y) is inside a parallelogram
 function isInsideRectangleV2(rect,x,y)
 {
-	
+	//Divide the parallelogram in two tringles, and check if is isnide any of the triangles 
 	if(isInsideTriangle(rect.getVertexPos(rect.vA, rect.posX,rect.posY),
 							rect.getVertexPos(rect.vB, rect.posX,rect.posY),
 							rect.getVertexPos(rect.vC, rect.posX,rect.posY), x, y))
 		return true ;
+	//Divide the parallelogram in two tringles, and check if is isnide any of the triangles 
 	else if(isInsideTriangle(rect.getVertexPos(rect.vA, rect.posX,rect.posY),
 			rect.getVertexPos(rect.vD, rect.posX,rect.posY),
 			rect.getVertexPos(rect.vC, rect.posX,rect.posY), x, y))
@@ -247,7 +265,7 @@ function insertRect(x,y,pixelsX,pixelsY, color, skewX, skewY,  rotate)
 
 }
 
-function insertRectV2(vA, vB, vC, vD, color, x ,y) {
+function insertRectV2(start, vA, vB, vC, vD, color, x ,y) {
 	//Set new coordinate frame with x y coords 
 	ctx.setTransform(1,0,0,1,x,y) ;
 	//Set pentagon color
@@ -258,8 +276,10 @@ function insertRectV2(vA, vB, vC, vD, color, x ,y) {
 	ctx.lineTo(vB[0], vB[1]) ;
 	ctx.lineTo(vC[0], vC[1]) ;
 	ctx.lineTo(vD[0], vD[1]) ;
+	// ctx.lineTo(vA[0], vA[1]) ;
+	
 	ctx.closePath() 
-
+	// console.log(vA,vB,vC) ;
 	//Draw REctangle
 	ctx.fill()
 }
@@ -316,8 +336,15 @@ function insertEllipse(x, y, radiusx,radiusy, rotation, start, end, counter, col
 	//Sketch the ellipse 
 	ctx.beginPath() ;
 	ctx.ellipse(x, y , radiusx,radiusy, rotation, start, end, counter) ;
+	ctx.strokeStyle = "black" ;
+
+
 	if(stroke) 
+	{
 		ctx.stroke() ;
+		ctx.lineWidth = 3;
+	}
+
 
 	//Draw the elipse
 	ctx.fill() ;
@@ -388,14 +415,14 @@ function drawGrid(row, col,xR,yR)
 
 //Add game's logo 
 function addTitle(x,y) {
-	ctx.fillStyle = "blue";
+	ctx.fillStyle = "#0f93e2";
 	ctx.fillRect(x,y, 200, 150) ;
 	ctx.fillStyle = "#390000";
 	ctx.textAlign = "left" ;
 	ctx.font = "90px arial";
 	ctx.fillText("Build", x ,y+110) ; 
 
-	ctx.fillStyle = "green";
+	ctx.fillStyle = "#00be01";
 	ctx.fillRect(x+200,y, 100, 150) ;
 	ctx.fillStyle = "#390000";
 	// ctx.textAlign = "center" ;
@@ -403,7 +430,7 @@ function addTitle(x,y) {
 	ctx.fillText("-A", x+200 ,y+110) ; 
 
 	ctx.fillStyle = "red";
-	ctx.fillRect(x,y+150, 300, 150) ;
+	ctx.fillRect(x,y+150, 300, 140) ;
 	ctx.fillStyle = "#390000";
 	// ctx.textAlign = "center" ;
 	ctx.font = "90px arial";
@@ -414,30 +441,30 @@ function addTitle(x,y) {
 
 
 //Draw the triangles when hovering difficulty (might be removed) 
-function getInfoSelector(x,y, hard)
-{
-	if(hard == null)
-	{
-		ctx.beginPath() ;
-		ctx.moveTo(x+50,y+35) ;
-		ctx.lineTo(400,550) ;
-		ctx.lineTo(700,550) ;
-		ctx.closePath() ;
-		ctx.strokeStyle = "green" ;
-		ctx.stroke() ;
-	}
+// function getInfoSelector(x,y, hard)
+// {
+// 	if(hard == null)
+// 	{
+// 		ctx.beginPath() ;
+// 		ctx.moveTo(x+50,y+35) ;
+// 		ctx.lineTo(400,550) ;
+// 		ctx.lineTo(700,550) ;
+// 		ctx.closePath() ;
+// 		ctx.strokeStyle = "green" ;
+// 		ctx.stroke() ;
+// 	}
 	
-	else
-	{
-		ctx.beginPath() ;
-		ctx.moveTo(x+50,y+35) ;
-		ctx.lineTo(450, 450) ;
-		ctx.lineTo(450, 650) ;
-		ctx.closePath() ;
-		ctx.strokeStyle = "green" ;
-		ctx.stroke() ;
-	}
-}
+// 	else
+// 	{
+// 		ctx.beginPath() ;
+// 		ctx.moveTo(x+50,y+35) ;
+// 		ctx.lineTo(450, 450) ;
+// 		ctx.lineTo(450, 650) ;
+// 		ctx.closePath() ;
+// 		ctx.strokeStyle = "green" ;
+// 		ctx.stroke() ;
+// 	}
+// }
 
 //*** ***//
 
@@ -450,10 +477,11 @@ function mainMenu() {
 	currentLoad = "mainMenu" ;
     ctx.clearRect(0,0,canvas.width,canvas.height)
     ctx.setTransform(1,0, 0,1,0,0) ;
-	insertRect(0,0,canvas.width, canvas.height,"#87ECEC",0,0,0) ;
+
+    //Draw background image
+	ctx.drawImage(img[1],0,0, canvas.width, canvas.height) ;
 
 
-	drawGrid(15,15) ;
 	//Insert title (Build-A-Block) 
 	addTitle(350,50) ;
 
@@ -464,36 +492,230 @@ function mainMenu() {
 	insertRect(10,50,200,200, "black", .5,.5) ;
 
 	insertPentagon([100,200],[200,200],[250,100],[150,0],[50,100], 525,425,"black") ;
+	
 	//Insert Play ellipse
 	insertEllipse(canvas.width/2, canvas.height/2 +30 , 150,75, 0, 0, 2*Math.PI, true, "#64EC42", "PLAY", false,0,20, "40" ) ;
 	//Insert instructions ellipse
-	//insertEllipse(canvas.width/2, canvas.height/4*3+30 , 150,75, 0, 0, 2*Math.PI, true, "#64EC42", "Instructions", false,0,10, "40" ) ;
+	insertEllipse(canvas.width/2, canvas.height/4*3+30 , 150,75, 0, 0, 2*Math.PI, true, "#64EC42", "How-To-Play", false,0,10, "40" ) ;
 	
 }
 
 //Function cotaining difficulty select content (view)  
 function difficultySelect() {
 	//Reset canvas, add background color 
+
 	currentLoad = "difficultySelect" ;
     ctx.clearRect(0,0,canvas.width,canvas.height)
 	ctx.setTransform(1,0, 0,1,0,0) ;
-	insertRect(0,0,canvas.width, canvas.height,"#87ECEC",0,0) ;
-	drawGrid(15,15) ;
-
+	ctx.save() ;
+	ctx.drawImage(img[1],0,0, canvas.width, canvas.height) ;
 	addTitle(400,50) ;
 
-	//Easy selection 
+	//Level 1 selection 
 	insertEllipse(canvas.width/2-200, canvas.height/4 +40, 140,60, 0, 0, 2*Math.PI, true, "#64EC42", "1", false,0,20,"40" ) ;
-	// if(isInsideEllipse(140,60, ))
 	
-	//Medium selection
+	
+	//Level 2 selection
 	insertEllipse(canvas.width/2-200, canvas.height/4*2+40, 140,60, 0, 0, 2*Math.PI, true, "#64EC42", "2", false,0,20,"40" ) ;
 	
-	//Hard selection 
+	//Level 3 selection 
 	insertEllipse(canvas.width/2-200, canvas.height/4*3+40 , 140,60, 0, 0, 2*Math.PI, true, "#64EC42", "3", false,0,20,"40" ) ;
 			
 	//GO back to main manu
-	insertEllipse(100, 50 , 75,30, 0, 0, 2*Math.PI, true, "#64EC42", "Main Menu", false,0,7,"20", "black" ) ;		
+	//Image go back
+
+	//Draw the rectangle which will contain text 
+	ctx.fillStyle = "#ffe4b5" ;
+	//Add fade to the rectangle 
+	ctx.globalAlpha = 0.4; 
+	ctx.fillRect(370,500,350,70) ;
+	ctx.fillStyle = "#390000";
+
+	//Return alpha bit to normal 
+	ctx.globalAlpha = 1.0;
+	ctx.textAlign = "left" ;
+	ctx.font = "22px arial";
+	//Add text 
+	ctx.fillText("Select a level to play, if you're new", 380 ,520) ; 
+	ctx.fillText("player make sure to go through the", 380 ,540) ;
+	ctx.fillText("How-To-Play section.", 380, 560) ; 
+	
+	//Draw back image 
+	ctx.drawImage(img[4], 15,15,100,60) ;
+	ctx.restore()
+}
+	
+//Function with mainmenu's content (view)
+function howToPlay() {
+
+	//Reset canvas, add background color 
+	currentLoad = "HowToPlay" ;
+    ctx.clearRect(0,0,canvas.width,canvas.height)
+    ctx.setTransform(1,0, 0,1,0,0) ;
+
+	ctx.drawImage(img[1],0,0, canvas.width, canvas.height) 
+
+	//Add rectangle and text containing the intructions
+	ctx.fillStyle = "#ffe4b5" ;
+	//Fade the rectangle added 
+	 ctx.globalAlpha = 0.4; 
+	ctx.fillRect(10,110,450,130) ;
+	ctx.fillRect(10,710,390,50) ;
+	ctx.fillStyle = "#390000";
+
+	//Go back to regular alpha bit 
+ 	ctx.globalAlpha = 1.0;
+
+	ctx.font = "22px arial";
+	ctx.fillText("Purpose of game: Fill in the silhouette using", 22 ,150) ; 
+	ctx.fillText("colored figures. All the pieces are used in ", 22 ,170) ; 
+	ctx.fillText("each puzzle. Left click and drag the small", 22,190) ; 
+	ctx.fillText("pieces onto the new position.", 22 ,210) ;  
+
+
+	ctx.fillText("To rotate a figure, select the figure and", 22 ,730)
+	ctx.fillText("then click any of these buttons.", 22 , 750)
+	 
+	// ctx.drawImage(img[1],0,0, canvas.width, canvas.height) ;
+	addTitle(470,20) ;
+	
+
+	//GO back to main manu
+	//Image to go back
+	ctx.drawImage(img[4], 15,15,100,60) ;
+
+	insertRect(170,650, 50,50, "blue") ;
+	//Image for rotation 
+	ctx.drawImage(img[3], 0,0,50,50)
+
+	insertRect(100,650, 50,50, "blue" );
+	//Image for rotation 
+	ctx.drawImage(img[2], 0,0,50,50)
+	tutorialExample() ;
 }
 
-//*** ***/
+
+function Level(x,y)
+{
+	//Reset canvas, add background color 
+	currentLoad = "Level" ;
+    ctx.clearRect(0,0,canvas.width,canvas.height)
+    ctx.setTransform(1,0,0,1,0,0) ; 
+
+	ctx.drawImage(img[1],0,0, canvas.width, canvas.height) ;
+
+	//Image go back
+	ctx.drawImage(img[4], 15,15,100,60) ;
+
+	insertRect(680,650, 50,50, "blue") ;
+	//Image rotation 
+	ctx.drawImage(img[3], 0,0,50,50)
+
+	insertRect(550,650, 50,50, "blue" );
+	//Image rotation 
+	ctx.drawImage(img[2], 0,0,50,50)
+	
+	window["solution"+level.toString()]() ; 
+
+	setFigures(x,y) ;
+
+}
+//*** ***// 
+ 
+//*** ANIMATION ***//
+
+// ANIMATION FOR HOW TO PLAY SECTION 
+window.requestAnimFrame = (function() {
+  return window.requestAnimationFrame ||
+         window.webkitRequestAnimationFrame ||
+         window.mozRequestAnimationFrame ||
+         window.oRequestAnimationFrame ||
+         window.msRequestAnimationFrame ||
+         function(/* function FrameRequestCallback */ callback, /* DOMElement Element */ element) {
+           window.setTimeout(callback, 1000/60);
+         };
+})();
+
+
+//Helper functions for tick 
+var lastTime = 0;
+function updateTime() {
+    var timeNow = new Date().getTime() / 1000; // All expressed in seconds
+    if (lastTime != 0) {
+        elapsed = timeNow - lastTime;
+    } else {
+        startTime = timeNow;
+    }
+    lastTime = timeNow;
+    totalElapsed = timeNow - startTime;
+     
+}
+// Timer callback for animations
+function tickTutorial() {
+    
+    //If the current screen is howtoplay, continue animation, else stop
+    if(currentLoad=="HowToPlay") {
+        updateTime()
+        howToPlay();
+    requestAnimFrame(tickTutorial);
+	}
+}
+
+//Function to draw each triangle in it's position in howtoplay screen 
+function tutorialExample(coords)
+{
+
+	//This is the silhuette black figure 
+	insertRect(250,300,150,150,"black" )
+	insertRect(150,300,100,150,"black" )
+	insertRect(150,450,250,150,"black" )
+
+	//These are the colores pieces, which will be animated 
+	insertRect(tutorialCoords["a"][0],tutorialCoords["a"][1],tutorialCoords["a"][2],tutorialCoords["a"][3],tutorialCoords["a"][4] )
+	insertRect(tutorialCoords["b"][0], tutorialCoords["b"][1], tutorialCoords["b"][2],tutorialCoords["b"][3], tutorialCoords["b"][4])
+	insertRect(tutorialCoords["c"][0], tutorialCoords["c"][1], tutorialCoords["c"][2], tutorialCoords["c"][3], tutorialCoords["c"][4])
+
+	//Continue animation processs
+	animateTutorial(tutorialCoords) 
+}
+
+function animateTutorial()	
+{
+
+	//Check if first square is set in it's final position, else continue animation 
+	if(tutorialCoords["a"][0] != 250 && tutorialCoords["a"][1] != 300)
+	{
+		pace = (620 - 250)/200 ;
+		tutorialCoords["a"][0] -= pace ;
+		pace = (400-300)/200 ;
+		tutorialCoords["a"][1] -= pace ;
+	}
+	//Check if second square is set in it's final position, else continue animation 
+	else if(tutorialCoords["b"][0] != 150 && tutorialCoords["b"][1] != 300)
+	{
+		pace = (500 - 150)/200 ;
+		tutorialCoords["b"][0] -= pace ;
+		pace = (400-300)/200 ;
+		tutorialCoords["b"][1] -= pace ;
+	}
+
+	//Check if third square is set in it's final position, else continue animation 
+	else if(tutorialCoords["c"][0] != 150 && tutorialCoords["c"][1] != 450)
+	{
+		pace = (500 - 150)/200 ;
+		tutorialCoords["c"][0] -= pace ;
+		pace = (600-450)/200 ;
+		tutorialCoords["c"][1] -= pace ;	
+	}
+
+	//If all figures are set in it's position, restart. 
+	else
+	{
+		tutorialCoords = {
+		"a": [620,400,150,150 , "#0f93e2"] , 
+		"b" : [500,400,100,150,"#00be01"] ,
+		"c" : [500,600,250,150,"red"]  
+		}
+	}
+
+}
