@@ -1,6 +1,6 @@
 //Developed by: Omar Cruz Pantoja
 //First beta completed on: 25/Julio/2017
-//Computer Graphics-
+//Computer Graphics-4995
 
 //Global variables that MUST be protected 
 
@@ -36,6 +36,9 @@ function initListeners()
 
 
 function init() {
+	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+    	alert("The game currently does not support mobile devices, sorry")
+	}
 
 	//Load canvas context
 	canvas = document.getElementById("canvas") 
