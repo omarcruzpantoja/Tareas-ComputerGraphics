@@ -11,7 +11,7 @@ var ctx ;
 //Screen loading variables 
 var currentLoad ;
 var level ;
-var sol = 43689 ;
+var solpct = 43689 ;
 
 //Select figures/rotate and locate vertices
 var Coords = {
@@ -54,7 +54,9 @@ function init() {
     {
     img[i] = new Image() ;
     img[i].onload = function() {
-
+    	//Make sure images were loaded before getting to the first page
+    	mainMenu() ;
+    	currentLoad = "mainMenu";
         } ;
     }
     for(i =0 ; i < source.length ; i++) 
@@ -64,8 +66,8 @@ function init() {
 	
 
 	//Start in main menu 
-	mainMenu() ;
-	currentLoad = "mainMenu";
+	
+	
 
 
 }
@@ -273,14 +275,14 @@ function mouseUp(event)
 				if(pix[i] == 0 && pix[1+i] == 0&& pix[2+i]==3)
 					counter++ ;
 			//Check how much percent of black colors are still missing 
-			pct = counter/(sol) * 100 
+			pct = counter/(solpct) * 100 
 
 			//If less than 2 percent of pixels include the color black, the level has been completed 
 			if (pct< 2)
 			{
 
 				//Go to next level, if level 3 has been completed, start on level 1 again. 
-				alert("Level", level, "completed");  
+				alert("Level completed");  
 				if(level ==3)
 					level =1 ;
 				else

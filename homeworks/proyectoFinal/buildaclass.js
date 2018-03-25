@@ -1,6 +1,6 @@
-//Developed by: Omar Cruz Pantoja
-//First beta completed on: 25/Julio/2017
-//Computer Graphics-4995
+// Developed by: Omar Cruz Pantoja
+// First beta completed on: 25/Julio/2017
+// Computer Graphics-4995
 
 //Global variable used in howtoplay animation
 //Must fix globals and enclose them in functions for safety 	
